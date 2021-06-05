@@ -32,16 +32,19 @@
 
 ## Solutions
 
-### Viz:
+### Viz
 
 * plotly 
 * https://kepler.gl/ -- eg demo at https://www.kaggle.com/mariamingallon/kepler-gl-hex-data-demo
 * streamlit https://docs.streamlit.io/en/stable/deploy_streamlit_app.html
+  * demo by Maria: https://share.streamlit.io/mariamingallonmm/smartcities-hack-streamlitapp
+
 
 ### Data:
 
 * postgis+postgresql 
 * geopandas
+* networkx
 
 
 ## Example of code:
@@ -52,6 +55,7 @@
 ## Oracle
 
 * https://apex.oracle.com/en/platform/low-code/
+* https://pretius.com/integration-of-google-assistant-with-oracle-apex-part-1/
 
 
 ## SG / Data sources
@@ -69,6 +73,7 @@
 * https://storymaps.arcgis.com/stories/4f782ddd18914d16bc912a81ef83ac80
 * https://data.gov.sg/dataset/sdcp-park-connector-line
 * https://www.onemap.gov.sg/home/
+* https://data.gov.sg/dataset/master-plan-2019-road-name-layer?resource_id=667b3f04-38d7-4be1-bb0e-6aa4141a03ee
 
 ### Secondary data
 
