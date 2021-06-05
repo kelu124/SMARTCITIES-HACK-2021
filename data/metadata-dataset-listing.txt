@@ -1,0 +1,106 @@
+# Metadata for Data.gov.sg Dataset Listing
+---
+Identifier: 'dba9594b-fb5c-41c5-bb7c-92860ee31aeb'
+Name: 'dataset-listing'
+Title: 'Data.gov.sg Dataset Listing'
+Description: 'This dataset contains a listing of all datasets provided on Data.gov.sg.'
+Topics:
+  - 'Technology'
+Keywords:
+  - 'Open Data'
+Publisher:
+  Name: 'GovTech'
+  Admin 1:
+    Name: 'Admin'
+    Department: 'Data.gov.sg'
+    Email: 'feedback@data.gov.sg'
+Sources:
+  - 'GovTech'
+Source Url: 'https://data.gov.sg/api/action/package_list'
+License: 'https://data.gov.sg/open-data-licence'
+Frequency: 'Daily'
+Coverage: '2021-06-05 to 2021-06-05'
+Last Updated: '2021-06-05T00:05:04.172685'
+Resources:
+  -
+    Identifier: '85be5dcc-93f6-4d36-ae10-c85b0907948c'
+    Title: 'Data.gov.sg Dataset Listing'
+    Url: 'https://storage.data.gov.sg/dataset-listing/resources/data-gov-sg-dataset-listing-2021-06-05T00-05-03Z.csv'
+    Format: 'CSV'
+    Coverage: '2021-06-05 to 2021-06-05'
+    Last Updated: '2021-06-05T00:05:03.577820'
+    Schema:
+      -
+        Name: 'organisation'
+        Title: 'Organisation'
+        Type: 'text'
+        Sub Type: 'general'
+      -
+        Name: 'dataset_id'
+        Title: 'Dataset ID'
+        Type: 'text'
+        Sub Type: 'general'
+      -
+        Name: 'dataset_name'
+        Title: 'Dataset Name'
+        Type: 'text'
+        Sub Type: 'general'
+      -
+        Name: 'date_created'
+        Title: 'Date created'
+        Type: 'datetime'
+        Sub Type: 'date'
+        Format: 'YYYY-MM-DD'
+      -
+        Name: 'last_updated'
+        Title: 'Last updated'
+        Type: 'datetime'
+        Sub Type: 'date'
+        Format: 'YYYY-MM-DD'
+      -
+        Name: 'description'
+        Title: 'Description'
+        Type: 'text'
+        Sub Type: 'general'
+      -
+        Name: 'frequency'
+        Title: 'Frequency'
+        Type: 'text'
+        Sub Type: 'general'
+      -
+        Name: 'coverage_start'
+        Title: 'Coverage Start'
+        Type: 'datetime'
+        Sub Type: 'date'
+        Format: 'YYYY-MM-DD'
+        Description: '"na" : Data not available or not applicable'
+      -
+        Name: 'coverage_end'
+        Title: 'Coverage End'
+        Type: 'datetime'
+        Sub Type: 'date'
+        Format: 'YYYY-MM-DD'
+        Description: '"na" : Data not available or not applicable'
+      -
+        Name: 'resource_id'
+        Title: 'Resource ID'
+        Type: 'text'
+        Sub Type: 'general'
+      -
+        Name: 'resource_name'
+        Title: 'Resource Name'
+        Type: 'text'
+        Sub Type: 'general'
+      -
+        Name: 'resource_description'
+        Title: 'Resource Description'
+        Type: 'text'
+        Sub Type: 'general'
+        Description:
+          - '"na" : Data not available or not applicable'
+          - '"-" : Data is negligible or not significant'
+      -
+        Name: 'resource_format'
+        Title: 'Resource Format'
+        Type: 'text'
+        Sub Type: 'general'
