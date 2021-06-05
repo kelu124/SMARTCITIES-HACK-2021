@@ -1,0 +1,40 @@
+# Metadata for Park Facilities
+---
+Identifier: '0a62b88e-ec0e-496b-8e87-f130071ff231'
+Name: 'park-facilities'
+Title: 'Park Facilities'
+Description: 'This dataset contains the representative location of facilities in Parks
+  which are under the purview of the National Parks Board.'
+Topics:
+  - 'Infrastructure'
+Keywords:
+  - 'Facilities'
+  - 'Facility'
+  - 'NParks'
+  - 'National Parks Board'
+  - 'Park Facilities'
+  - 'Parks'
+Publisher:
+  Name: 'National Parks Board'
+  Admin 1:
+    Name: 'Margaret Cheong'
+    Department: 'NATIONAL PARKS BOARD'
+    Email: 'margaret_cheong@nparks.gov.sg'
+Sources:
+  - 'National Parks Board'
+License: 'https://data.gov.sg/open-data-licence'
+Frequency: 'Ad-hoc'
+Last Updated: '2020-06-22T00:02:23.922308'
+Resources:
+  -
+    Identifier: 'c1118f84-2391-44bd-8b88-c8a6267b1cc4'
+    Title: 'Park Facilities (KML)'
+    Url: 'https://geo.data.gov.sg/nparks-facilities/2020/06/19/kml/nparks-facilities.kml'
+    Format: 'KML'
+    Last Updated: '2020-06-18T16:00:00'
+  -
+    Identifier: 'aeb02bb4-2216-4983-9f52-f8b79af0f6c0'
+    Title: 'Park Facilities (GEOJSON)'
+    Url: 'https://geo.data.gov.sg/nparks-facilities/2020/06/19/geojson/nparks-facilities.geojson'
+    Format: 'GeoJSON'
+    Last Updated: '2020-06-18T16:00:00'
