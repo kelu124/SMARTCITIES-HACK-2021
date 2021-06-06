@@ -9,12 +9,15 @@ import geopandas as gpd
 
 import osmnx as ox
 import networkx as nx
+
 #import plotly.graph_objects as go
+#import plotly.express as px
+
 import numpy as np
 import pickle
 import os
 
-#import plotly.express as px
+
 
 import fiona
 from streamlit_folium import folium_static
