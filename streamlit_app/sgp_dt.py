@@ -22,6 +22,7 @@ import shapely
 def getStartEnd(start_point,end_point,df_nodes,dummy=False):
    
     if dummy: #using it because i reached Nominatim limit
+        # it selects two points around, artificial I agree but well..
         start_point = (103.855030, 1.2759796) 
         end_point = (103.85019, 1.285865) 
         x_end = end_point[0]
@@ -30,6 +31,7 @@ def getStartEnd(start_point,end_point,df_nodes,dummy=False):
         y_start = start_point[1]   
 
     else:
+        # ElSe, we'll be asking for more info online
         locator = Nominatim(user_agent="http://101.98.38.221:8501")
         if start_point:
             location_s = locator.geocode(start_point)
@@ -118,24 +120,24 @@ def mapIt(start,end,weighted_G,dfNodes,dfEdges):
         lon.append(r[0]) 
     #st.write(route)
     # Now that we know the latlon of the nodes, we can find the polylines linking them
-    nodes, lines = [], []
+    #nodes, lines = [], []
     #st.write(dfNodes.head(3))
-    for r in route:
-        NODE = dfNodes[dfNodes.Pos == r]
-        if len(NODE):
-            nodes.append(NODE.iloc[0].ID)
+    #for r in route:
+    #    NODE = dfNodes[dfNodes.Pos == r]
+    ##    if len(NODE):
+    #        nodes.append(NODE.iloc[0].ID)
 
     #st.write(nodes)
-    for k in range(len(nodes)-1):
-        R = dfEdges[((dfEdges.TO == nodes[k]) & (dfEdges.FROM == nodes[k+1])) | ((dfEdges.TO == nodes[k+1]) & (dfEdges.FROM == nodes[k]))]
-        if len(R):
-            lines.append(R)
-    df = pd.concat(lines)
+    #for k in range(len(nodes)-1):
+    #    R = dfEdges[((dfEdges.TO == nodes[k]) & (dfEdges.FROM == nodes[k+1])) | ((dfEdges.TO == nodes[k+1]) & (dfEdges.FROM == nodes[k]))]
+    ##    if len(R):
+    #        lines.append(R)
+    #df = pd.concat(lines)
     #df["geometry"] = df["geometry"].apply(lambda x: loads(x.replace('\'', '')) )
-    gdf = geopandas.GeoDataFrame(df, geometry='geometry')
+    #gdf = geopandas.GeoDataFrame(df, geometry='geometry')
 
     # Starting the plot
-    fig = plot_path(gdf, lat, lon, start, end)
+    fig = plot_path(lat, lon, start, end)
     #fig = addshortest(fig, shortest)
     return fig
 
@@ -205,7 +207,7 @@ def closest_point(point, points):
 
 
 
-def plot_path(gdf, lat, long, origin_point, destination_point):
+def plot_path(lat, long, origin_point, destination_point):
     
     """
     Given a list of latitudes and longitudes, origin 
@@ -222,7 +224,7 @@ def plot_path(gdf, lat, long, origin_point, destination_point):
     """
     # adding the lines joining the nodes
     
-    LAT,LON = getLL(gdf)
+
     
     fig = go.Figure()
      
@@ -235,14 +237,7 @@ def plot_path(gdf, lat, long, origin_point, destination_point):
         marker = {'size': 10},
         line = dict(width = 4.5, color = 'blue')))
 
-    fig.add_trace(go.Scattermapbox(
-        name = "Optimal path - polylines",
-        mode = "lines",
-        lon = LON,
-        lat = LAT,
-        marker = {'size': 10},
-        line = dict(width = 4.5, color = 'red')))
-        
+
     # adding source marker
     fig.add_trace(go.Scattermapbox(
         name = "Source",

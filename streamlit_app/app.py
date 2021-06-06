@@ -36,7 +36,7 @@ def loadShp(path):
     return G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV
 
 # This call should be cached
-G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV = loadShp("data/s3/StreetsLampsCCTVTrees.shp")
+G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV = loadShp("data/s4/SingaporeLampsCCTVTrees.shp")
 
 
 # Writing the sidebar
