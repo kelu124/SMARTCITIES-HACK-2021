@@ -1,5 +1,15 @@
-## 
+## Overview
 
+* TO USE
+  * OSM all roads (SingaporeStreets.zip)
+  * TREES
+  * CCTV
+  * CAMERAS
+* Streamlit, Folium
+* Networkx for solution finding
+* Oracle cloud for VM
+
+* Perimeter: center of singapore
 
 ### Route planners
 
