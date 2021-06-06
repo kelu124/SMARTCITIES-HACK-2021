@@ -16,8 +16,8 @@ st.sidebar.write("### Parameters")
 #perf = st.sidebar.slider ( "Green weights" , min_value=0.5 , max_value=2.0 , value=1.0 , step=0.1 , format=None , key=None )
 #nTirages = st.sidebar.slider (  "Lights" , min_value=5 , max_value=500 , value=10, step=5 , format=None , key=None )
 #capped = st.sidebar.checkbox('Some value')
-start_point = st.sidebar.text_input('Choose starting point...',"(383474.64370036806,146569.12470285365)") 
-end_point = st.sidebar.text_input('Choose destination...',"(383423.34972914157,145768.7813587437)") 
+start_point = st.sidebar.text_input('Choose starting point...',"1.2822526633223938, 103.84732075349544") 
+end_point = st.sidebar.text_input('Choose destination...',"1.2785088771898996, 103.8413733342337") 
 security_check = st.sidebar.checkbox('Security', value=True)
 perf_cctv = st.sidebar.slider ( "CCTV" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None )
 perf_lamps = st.sidebar.slider ( "Lamps" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None )
@@ -48,34 +48,24 @@ else:
 
 
 # Opening path, streelamps & CCTV
-#fname = 'data/SingaporeStreets.zip'
-#SLC = gpd.read_file(fname)
+# fname = 'data/SingaporeStreets.zip'
+# SLC = gpd.read_file(fname)
+# SLC
 
 G = loadShp(input_file)
 
 weighted_G, pos, labels = get_weighted_graph(G, params)
 
-#GDF = gpd.read_file(input_file)
-
-#xmin, ymin, xmax, ymax = SLC.total_bounds
-# Opening trees
-# Opening park facilities
-
-# gpd.io.file.fiona.drvsupport.supported_drivers['KML'] = 'rw'
-# gdf = gpd.read_file('../data/park-facilities/park-facilities-kml.kml', driver='KML')
-# gdf['lon'] = gdf['geometry'].x
-# gdf['lat'] = gdf['geometry'].y
 
 G = getNetworkAround(G, 1.2806, 103.8464, 751)
-# ox.plot_graph(G)
 
-for u,v,d in G.edges(data=True):
-    #ID = d["osmid"]
-    #d['weight'] = 10 +  1.0 / d['length'] # + d['Lamps50m'] + d["CCTV100mRE"]
-    d['weight'] = 1
+#need to get the coords from the boxes, problem is they 
 
 origin_point = (1.2822526633223938, 103.84732075349544) 
 destination_point = (1.2785088771898996, 103.8413733342337)
 
+start = (float(start.split(',')[0]),float(start.split(',')[1]))
+end = (float(end.split(',')[0]), float(end.split(',')[1]))
+
 #need to update to use streamlit-folium
-mapPath(G,origin_point,destination_point)
+mapPath(G,start,end)

@@ -5,7 +5,7 @@ import networkx as nx
 #import pandas as pd
 #import seaborn as sns
 import logging
-#import geopandas as gpd
+import geopandas as gpd
 
 import osmnx as ox
 import networkx as nx
@@ -16,7 +16,6 @@ import os
 
 #import plotly.express as px
 
-#import geopandas as gpd ## geopandas gdal 
 import fiona
 from streamlit_folium import folium_static
 import folium
@@ -145,8 +144,11 @@ def mapPath(G,origin_point,destination_point):
 
     # get the nearest nodes to the locations 
     origin_node = ox.distance.nearest_nodes(G, origin_point[1],origin_point[0]) 
+    logging.info(f'origin node: {origin_node}')
     destination_node = ox.distance.nearest_nodes(G, destination_point[1],destination_point[0])
-    
+    logging.info(f'destination node: {destination_node}')
+
+
     # Finding the optimal path 
     shortest_route = nx.shortest_path(G, origin_node, destination_node, weight = 'length') 
     best_route = nx.shortest_path(G, origin_node, destination_node, weight = 'weight') 
