@@ -1,4 +1,4 @@
-import streamlit as st
+#import streamlit as st
 
 import networkx as nx
 import matplotlib.pyplot as plt 
@@ -87,7 +87,7 @@ def addshortest(fig, shortest):
         LonShort.append(r[0]) 
 
     fig.add_trace(go.Scattermapbox(
-        name = "Shortest path",
+        name = "Shortest pathr",
         mode = "lines",
         lon = LonShort,
         lat = LatShort,
@@ -98,18 +98,18 @@ def addshortest(fig, shortest):
 
 
 
-def mapIt(start,end,G,dfNodes,dfEdges,SEC=0,CCTV=5.0,LAMP=5.0):
+def mapIt(start,end,weighted_G,dfNodes,dfEdges):
     
     # Creating the weighted network based on the user parameters
-    weighted_G, pos, labels = get_weighted_graph(G,SEC,CCTV,LAMP)
+   
     #st.write(start,end)
     # Now that we know these nodes, we can find the shorted path
     try:
         route    = nx.shortest_path(weighted_G ,source=start, target=end)
-        shortest = nx.shortest_path(weighted_G ,source=start, target=end, weight = "Length")
+        #shortest = nx.shortest_path(G ,source=start, target=end, weight = "Length")
     except:
-        st.write("## !! Address not found")
-        return ""
+        return "## !! Address not found"
+        
     # And getting the list of the nodes position tuples
     lat,lon = [],[]
     for r in route:
@@ -136,7 +136,7 @@ def mapIt(start,end,G,dfNodes,dfEdges,SEC=0,CCTV=5.0,LAMP=5.0):
 
     # Starting the plot
     fig = plot_path(gdf, lat, lon, start, end)
-    fig = addshortest(fig, shortest)
+    #fig = addshortest(fig, shortest)
     return fig
 
 
@@ -145,7 +145,7 @@ def mapIt(start,end,G,dfNodes,dfEdges,SEC=0,CCTV=5.0,LAMP=5.0):
 
 
 
-def get_weighted_graph(G,security=0,cctv_perf=5.0,lamps_perf=5.0):
+def get_weighted_graph(G,security=1,cctv_perf=5.0,lamps_perf=5.0):
     """
     Takes a graph G as input and adds the weights
     """
@@ -166,6 +166,37 @@ def get_weighted_graph(G,security=0,cctv_perf=5.0,lamps_perf=5.0):
     labels = nx.get_edge_attributes(weighted_G,'weight')
     return weighted_G, pos, labels
 
+
+
+def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
+    """
+    Takes a graph G as input and adds the weights
+    """
+    weighted_G = nx.Graph()
+    for data in G.edges(data=True):
+        data=data
+        coord1 = data[0]
+        coord2 = data[1]
+
+        # ZE formula to tweak
+        data[2]['weight'] = data[2]['Length']
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.1*data[2]['CCTV50mRE'] * cctv_perf )
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.1*data[2]['Lamps50m']  * lamps_perf) 
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.1*data[2]['Trees10m']  * trees_perf) 
+
+        # It is adapted for pedestrians ?
+        relativeEase = 1.0
+        if data[2]['fclass'] == "pedestrian":
+            relativeEase = 0.3
+        elif data[2]['fclass'] == "footway":
+            relativeEase = 0.3
+        elif data[2]['fclass'] == "steps":
+            relativeEase = 0.6            
+        data[2]['weight'] = data[2]['weight'] * relativeEase
+
+        weighted_G.add_edge(coord1,coord2,weight=data[2]['weight'])
+
+    return weighted_G
 
 
 def closest_point(point, points):
