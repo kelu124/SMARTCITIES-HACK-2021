@@ -49,9 +49,9 @@ if not UseDummyPoints:
 #security = st.sidebar.checkbox('Security',value = True)
 security =1
 if security:
-    cctv_perf = st.sidebar.slider ( "CCTV" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None )
-    lamps_perf = st.sidebar.slider ( "Lamps" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None ) 
-    trees_perf = st.sidebar.slider ( "Trees" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None ) 
+    cctv_perf = st.sidebar.slider ( "CCTV" , min_value=0 , max_value=1000 , value=0 , step=1 , format=None , key=None )
+    lamps_perf = st.sidebar.slider ( "Lamps" , min_value=0 , max_value=1000 , value=0 , step=1 , format=None , key=None ) 
+    trees_perf = st.sidebar.slider ( "Trees" , min_value=0 , max_value=1000 , value=0 , step=1 , format=None , key=None ) 
     #@todo add type of walk, presence of trees
     
 if UseDummyPoints:
@@ -59,7 +59,7 @@ if UseDummyPoints:
 else:
     start,end = dt.getStartEnd(start_point, end_point, df_nodes, dummy= UseDummyPoints)
 
-weighted_G  = modernGraphWeightUpdates(G,cctv_perf,lamps_perf,trees_perf)
+weighted_G  = dt.modernGraphWeightUpdates(G,cctv_perf,lamps_perf,trees_perf)
 
 fig = dt.mapIt(start,end,weighted_G,dfNodes,dfEdges)
 

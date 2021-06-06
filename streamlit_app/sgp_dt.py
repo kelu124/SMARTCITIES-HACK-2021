@@ -105,7 +105,7 @@ def mapIt(start,end,weighted_G,dfNodes,dfEdges):
     #st.write(start,end)
     # Now that we know these nodes, we can find the shorted path
     try:
-        route    = nx.shortest_path(weighted_G ,source=start, target=end)
+        route    = nx.shortest_path(weighted_G ,source=start, target=end, weight = 'weight')
         #shortest = nx.shortest_path(G ,source=start, target=end, weight = "Length")
     except:
         return "## !! Address not found"
@@ -180,9 +180,9 @@ def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
 
         # ZE formula to tweak
         data[2]['weight'] = data[2]['Length']
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.1*data[2]['CCTV50mRE'] * cctv_perf )
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.1*data[2]['Lamps50m']  * lamps_perf) 
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.1*data[2]['Trees10m']  * trees_perf) 
+        data[2]['weight'] = data[2]['weight'] * (1.0 + 0.1*data[2]['CCTV50mRE'] * cctv_perf )
+        data[2]['weight'] = data[2]['weight'] * (1.0 + 0.1*data[2]['Lamps50m']  * lamps_perf) 
+        data[2]['weight'] = data[2]['weight'] * (1.0 + 0.1*data[2]['Trees10m']  * trees_perf) 
 
         # It is adapted for pedestrians ?
         relativeEase = 1.0
