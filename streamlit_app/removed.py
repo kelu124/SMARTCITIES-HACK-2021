@@ -1,3 +1,7 @@
+st.sidebar.radio('', ['Walking','Running', 'Cycling'])
+st.sidebar.radio('Are you...', ['Local',' Tourist (we optimise your route to help you discover places popular with tourists)'])
+
+
 # Moar items for the sidebar
 
 if st.sidebar.checkbox('Amenities'):

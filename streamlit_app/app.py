@@ -5,11 +5,13 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import seaborn as sns
 import logging
-
-import geopandas
+import numpy as np
+import geopandas as gpd
 from geopy.geocoders import Nominatim
-
+from shapely.wkt import loads
 from scipy.spatial.distance import cdist
+
+import plotly.graph_objects as go
 
 # Let's brag about digital twins ;)
 import sgp_dt as dt
@@ -20,9 +22,12 @@ def loadShp(path):
     # Reading the overall network
     G= nx.readwrite.nx_shp.read_shp(path)
     # Support to network identification
-    df_nodes = pd.read_csv("../data/SingaporeStreets/SG_nodes.csv", index_col=0)
+    df_nodes = pd.read_csv("../data/SG_nodes.txt", index_col=0)
+    # Some cleaning necessary for csv loadup
     dfNodes = pd.read_csv("../data/dfNodes.csv.zip")
+    dfNodes.Pos = dfNodes.Pos.apply(lambda x: eval(x))
     dfEdges = pd.read_csv("../data/dfEdges.csv.zip") 
+    dfEdges.geometry = dfEdges.geometry.apply(lambda x: loads(x.replace('\'', '')))
     # Additional layers  
     gTrees = gpd.read_file('../data/sTrees.zip') 
     gLamps = gpd.read_file('../data/sLamps.zip') 
@@ -36,18 +41,24 @@ G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV = loadShp("../data/s
 
 # Writing the sidebar
 
-st.sidebar.radio('', ['Walking','Running', 'Cycling'])
-st.sidebar.radio('Are you...', ['Local',' Tourist (we optimise your route to help you discover places popular with tourists)'])
+UseDummyPoints= st.sidebar.checkbox('Dummy values',value = True)
+if not UseDummyPoints:
+    start_point = st.sidebar.text_input('Choose starting point...',"Marina Bay, Singapore") 
+    end_point = st.sidebar.text_input('Choose destination...',"Boat Quay, Singapore") 
 
-start_point = st.sidebar.text_input('Choose starting point...',"Marina Bay, Singapore") 
-end_point = st.sidebar.text_input('Choose destination...',"Boat Quay, Singapore") 
-
-security = st.sidebar.checkbox('Security',value = True)
+#security = st.sidebar.checkbox('Security',value = True)
+security =1
 if security:
     cctv_perf = st.sidebar.slider ( "CCTV" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None )
     lamps_perf = st.sidebar.slider ( "Lamps" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None ) 
-    pop_perf = st.sidebar.slider ( "Population density" , min_value=1 , max_value=10 , value=10 , step=1 , format=None , key=None )
+    #@todo add type of walk, presence of trees
+    
+if UseDummyPoints:
+    start,end = dt.getStartEnd("nop", "end", df_nodes, dummy= UseDummyPoints)
+else:
+    start,end = dt.getStartEnd(start_point, end_point, df_nodes, dummy= UseDummyPoints)
 
-start,end = dt.getStartEnd(start_point,end_point)
 
-fig = dt.mapIt(start,end,G,SEC=security,CCTV=cctv_perf,LAMP=lamps_perf)
+fig = dt.mapIt(start,end,G,dfNodes,dfEdges,SEC=security,CCTV=cctv_perf,LAMP=lamps_perf)
+
+st.write(fig)
