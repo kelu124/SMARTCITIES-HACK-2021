@@ -4,7 +4,7 @@ import networkx as nx
 import matplotlib.pyplot as plt 
 import pandas as pd
 import seaborn as sns
-
+import logging
 st.write(nx.__version__)
 
 # Writing the sidebar
@@ -15,17 +15,43 @@ capped = st.sidebar.checkbox('Some value')
 
 
 @st.cache(allow_output_mutation=True)#allow_output_mutation=True)
-def loadShp():
-    G= nx.readwrite.nx_shp.read_shp("data/shp_input_networkx_EPSG32648/split_intersection.shp")
+def loadShp(path):
+    G= nx.readwrite.nx_shp.read_shp(path)
     return G
 
-G = loadShp()
+G = loadShp("data/shp_input_networkx_EPSG32648/split_intersection.shp")
 
-weighted_G = nx.Graph()
-for data in G.edges(data=True):
-   weighted_G.add_edge(data[0],data[1],weight=data[2]['distance'])
-pos = {v:v for v in weighted_G.nodes()}
-labels = nx.get_edge_attributes(weighted_G,'weight')
+test_G = loadShp("data/StreetsAndLampsAndCCTV.shp")
+
+
+
+
+def get_weighted_graph(G):
+    """
+    Takes a graph G as input and adds the weights
+    """
+    weighted_G = nx.Graph()
+    for data in G.edges(data=True):
+        #logging.info(f'{data}')
+        coord1 = data[0]
+        coord2 = data[1]
+        data_dict = data[2]
+        #the new shape file doesn't currently have distences so 
+        #if there are no distances we just set the weights to 1
+        try:
+            distance = data_dict['distance']
+            weighted_G.add_edge(coord1,coord2,weight=data_dict['distance'])
+        except:
+            weighted_G.add_edge(coord1,coord2,weight=1)
+    #logging.info(f'{data[0]}')
+    #logging.info(f'{data[1]}')
+    #logging.info(f'{data[2]}')
+    pos = {v:v for v in weighted_G.nodes()}
+    labels = nx.get_edge_attributes(weighted_G,'weight')
+    return weighted_G, pos, labels
+
+
+weighted_G, pos, labels = get_weighted_graph(test_G)
 
 
 #TODO convert physicla address to coordinates
@@ -44,8 +70,6 @@ end=(383423.34972914157,145768.7813587437)
 ## Finding shortest path
 if 0:
     route=nx.shortest_path(weighted_G,source=start, target=end)
-
-
 
     df = pd.DataFrame(columns=['x','y'])
     for r in route:
