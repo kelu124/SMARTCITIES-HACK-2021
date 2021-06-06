@@ -16,7 +16,7 @@ nTirages = st.sidebar.slider (  "Lights" , min_value=5 , max_value=500 , value=1
 capped = st.sidebar.checkbox('Some value')
 
 # Opening path, streelamps & CCTV
-fname = 'data/SingaporeStreets.zip'
+#fname = 'data/SingaporeStreets.zip'
 #SLC = gpd.read_file(fname)
 
 G = loadShp(input_file)
@@ -46,4 +46,4 @@ origin_point = (1.2822526633223938, 103.84732075349544)
 destination_point = (1.2785088771898996, 103.8413733342337)
 
 #need to update to use streamlit-folium
-mapPath(G,origin_point,destination_point,WGT = 'length')
+mapPath(G,origin_point,destination_point)

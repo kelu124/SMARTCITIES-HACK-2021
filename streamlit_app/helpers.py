@@ -141,40 +141,32 @@ def showSGP():
     # Plotting the map graph 
     ox.plot_graph(G)
 
-def mapPath(G,origin_point,destination_point,WGT = 'length'):
-    # define origin and desination locations 
-    #origin_point = (1.278353050783832, 103.84105995326672) 
-    #destination_point = (1.2853283229119088, 103.85262989657622)
+
+
+def mapPath(G,origin_point,destination_point):
+
     # get the nearest nodes to the locations 
     origin_node = ox.distance.nearest_nodes(G, origin_point[1],origin_point[0]) 
     destination_node = ox.distance.nearest_nodes(G, destination_point[1],destination_point[0])
-    # printing the closest node id to origin and destination points origin_node, destination_node
     
-        # Finding the optimal path 
-    route = nx.shortest_path(G, origin_node, destination_node, weight = WGT) 
-    # getting coordinates of the nodes
-    # we will store the longitudes and latitudes in following list 
-    long = [] 
-    lat = []  
-    for i in route:
-        point = G.nodes[i]
-        long.append(point['x'])
-        lat.append(point['y'])
-    #plot_path(gdf,lat, long, origin_point, destination_point)
+    # Finding the optimal path 
+    shortest_route = nx.shortest_path(G, origin_node, destination_node, weight = 'length') 
+    best_route = nx.shortest_path(G, origin_node, destination_node, weight = 'weight') 
 
     #create the base map
     #need to get the tiles and attributes from one of these themes:
     #http://leaflet-extras.github.io/leaflet-providers/preview/
-    m = folium.Map(location = [1.2822526633223938, 103.84732075349544], zoom_start = 16,
+    m = folium.Map(location = [1.2822526633223938, 103.84732075349544], zoom_start = 15,
     tiles='https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
     attr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')
 
-    # add marker for Liberty Bell
-    #tooltip = "Liberty Bell"
-    #folium.Marker(
-    #    [1.2785088771898996, 103.8413733342337], popup="Liberty Bell", tooltip=tooltip
-    #).add_to(m)
-    # call to render Folium map in Streamlit 
-    m = ox.plot_route_folium(G, route, route_map = m)
-    #route_map.save('../data/osmnx/test.html')
+    tooltip = "Your Location"
+    folium.Marker(
+       [origin_point[0], origin_point[1]], popup="Your Location", tooltip=tooltip
+    ).add_to(m)
+
+    m = ox.plot_route_folium(G, shortest_route, route_map = m, color='red', tooltip = 'Shortest Path')
+    m = ox.plot_route_folium(G, best_route, route_map = m, color='green', tooltip = 'Safe Path')
+
+    #render the map in streamlit
     folium_static(m)
