@@ -2,14 +2,18 @@
 
 ![Python Logo](./python_logo.png)
 ## Description
-Insert repository description here. Please ensure that a prospective user is able to clearly understand the purpose of this repository from this description.
+
+Mott MacDonald are delighted to present our #SmartCities Hackathon Solution “MyWay” which provides a safe solution for traversing the beautiful City of Singapore for pedestrians, improving mental health, and feeling of safety and security.
+
+We are excited to be involved in the #SmartCities Hackathon, it resonates with our company purpose “To improve society by considering social outcomes in everything we do; relentlessly focusing on excellence and digital innovation, transforming our clients' businesses, our communities and employee opportunities.” We have assembled a truly, diverse, international team to take part in the Hackathon, as well as benefiting from the mentorship of Himanshu Joshi and Jyotirmaya Patro from the event itself,  please refer to appendix XXX for the team details.
+
 
 ## Repository Ownership
 
 * **Practice**: Cities
 * **Sector**: Digital Twins
 * **Original Author(s)**: the MM team !!
-* **Contact Details for Current Repository Owner(s)**: - INSERT HERE
+* **Contact Details for Current Repository Owner(s)**: luc.jonveaux@mottmac.com
 
 ## Installation Instructions
 
