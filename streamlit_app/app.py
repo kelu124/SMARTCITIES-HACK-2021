@@ -36,7 +36,7 @@ def loadShp(path):
     return G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV
 
 # This call should be cached
-G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV = loadShp("data/s3/StreetsLampsCCTVTrees.shp")
+G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV = loadShp("data/s4/SingaporeLampsCCTVTrees.shp")
 
 
 # Writing the sidebar
@@ -59,7 +59,7 @@ if UseDummyPoints:
 else:
     start,end = dt.getStartEnd(start_point, end_point, df_nodes, dummy= UseDummyPoints)
 
-weighted_G  = modernGraphWeightUpdates(G,cctv_perf,lamps_perf,trees_perf)
+weighted_G  = dt.modernGraphWeightUpdates(G,cctv_perf,lamps_perf,trees_perf)
 
 fig = dt.mapIt(start,end,weighted_G,dfNodes,dfEdges)
 
