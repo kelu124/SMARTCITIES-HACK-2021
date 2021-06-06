@@ -5,7 +5,7 @@
   * TREES
   * CCTV
   * CAMERAS
-* Streamlit, Folium
+* Streamlit, Folium 
 * Networkx for solution finding
 * Oracle cloud for VM
 

@@ -1,7 +1,7 @@
 # My Way
 
 ![Python Logo](./python_logo.png)
-## Description
+## Description 
 Insert repository description here. Please ensure that a prospective user is able to clearly understand the purpose of this repository from this description.
 
 ## Repository Ownership
