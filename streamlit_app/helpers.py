@@ -23,12 +23,12 @@ import folium
 from shapely.ops import nearest_points
 
 
-@st.cache(allow_output_mutation=True)#allow_output_mutation=True)
+@st.cache(allow_output_mutation=True)
 def loadShp(path):
     G= nx.readwrite.nx_shp.read_shp(path)
     return G
 
-def get_weighted_graph(G):
+def get_weighted_graph(G, params):
     """
     Takes a graph G as input and adds the weights
     """
@@ -38,13 +38,11 @@ def get_weighted_graph(G):
         coord1 = data[0]
         coord2 = data[1]
         data_dict = data[2]
-        #the new shape file doesn't currently have distences so 
-        #if there are no distances we just set the weights to 1
+        data[2]['weight']=(data[2]['CCTV50mRE']*params['sec']*params['cctv'])+(data[2]['Lamps50m']*params['sec']*params['lamps'])+data[2]['length']
         try:
-            distance = data_dict['distance']
-            weighted_G.add_edge(coord1,coord2,weight=data_dict['distance'])
+            weighted_G.add_edge(coord1,coord2,weight=data[2]['weight'])
         except:
-            weighted_G.add_edge(coord1,coord2,weight=1)
+            weighted_G.add_edge(coord1,coord2,weight=-999)
     #logging.info(f'{data[0]}')
     #logging.info(f'{data[1]}')
     #logging.info(f'{data[2]}')
