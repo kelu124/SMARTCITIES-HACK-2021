@@ -87,7 +87,7 @@ def addshortest(fig, shortest):
         LonShort.append(r[0]) 
 
     fig.add_trace(go.Scattermapbox(
-        name = "Path",
+        name = "Shortest path",
         mode = "lines",
         lon = LonShort,
         lat = LatShort,
@@ -197,7 +197,7 @@ def plot_path(gdf, lat, long, origin_point, destination_point):
      
     
     fig.add_trace(go.Scattermapbox(
-        name = "Path",
+        name = "Optimal path - nodes",
         mode = "lines",
         lon = long,
         lat = lat,
@@ -205,7 +205,7 @@ def plot_path(gdf, lat, long, origin_point, destination_point):
         line = dict(width = 4.5, color = 'blue')))
 
     fig.add_trace(go.Scattermapbox(
-        name = "Path",
+        name = "Optimal path - polylines",
         mode = "lines",
         lon = LON,
         lat = LAT,
