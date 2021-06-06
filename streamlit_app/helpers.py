@@ -6,8 +6,7 @@ import networkx as nx
 #import seaborn as sns
 import logging
 #import geopandas as gpd
-import osmnx as ox
-# https://towardsdatascience.com/find-and-plot-your-optimal-path-using-plotly-and-networkx-in-python-17e75387b873
+
 import osmnx as ox
 import networkx as nx
 #import plotly.graph_objects as go
@@ -162,7 +161,13 @@ def mapPath(G,origin_point,destination_point,WGT = 'length'):
         long.append(point['x'])
         lat.append(point['y'])
     #plot_path(gdf,lat, long, origin_point, destination_point)
-    m = folium.Map(location = [1.2822526633223938, 103.84732075349544], zoom_start = 16)
+
+    #create the base map
+    #need to get the tiles and attributes from one of these themes:
+    #http://leaflet-extras.github.io/leaflet-providers/preview/
+    m = folium.Map(location = [1.2822526633223938, 103.84732075349544], zoom_start = 16,
+    tiles='https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
+    attr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')
 
     # add marker for Liberty Bell
     #tooltip = "Liberty Bell"

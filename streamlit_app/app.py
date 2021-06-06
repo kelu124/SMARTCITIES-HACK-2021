@@ -6,6 +6,8 @@ from helpers import *
 #new file
 input_file = "data/StreetsAndLampsAndCCTV.shp"
 
+# https://towardsdatascience.com/find-and-plot-your-optimal-path-using-plotly-and-networkx-in-python-17e75387b873
+
 
 # Writing the sidebar
 st.sidebar.write("### Parameters")
