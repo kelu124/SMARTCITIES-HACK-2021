@@ -138,6 +138,41 @@ def showSGP():
     # Plotting the map graph 
     ox.plot_graph(G)
 
+##features = ['trees', 'cctv', 'lighting_lamps']
+features = ['trees']
+anchor_pt = destination_point
+
+def data_markers(features, anchor_pt):
+    """
+    plot the markers associated with features selected by user
+
+    # for trees only for now
+
+    # TODO: improve with a loop
+    # TODO: link to geolocation of trees
+    # TODO: Aggregate features in csv or similar to bring in with pandas.read_csv; iterate through each feature
+    """
+
+    for feature in features:
+        icon_url = os.path.join(os.getcwd(),'streamlit_app','assets',feature)
+
+        if feature == 'trees':
+            icon_url = os.path.join(icon_url, 'leaf-green.png')
+            shadow_url = os.path.join(icon_url, 'leaf-shadow.png')
+            icon_size = [38, 95]
+            #change from destination_point to actual geolocation of feature
+            icon_anchor = [destination_point[0], destination_point[1]]
+            #add anchor for shadow nearby icon_anchor point
+            shadow_anchor = [(icon_anchor[0] - .10*icon_size[0]), (icon_anchor[1] - .10*icon_size[1])]
+            popup_anchor = [-shawdow_anchor[0], -shadow_anchor[1]]
+
+        icon = folium.features.CustomIcon(icon_url, icon_size)
+        lat = anchor_point[0]
+        lon = anchor_point[1]
+        icon_marker = folium.Marker([lat, lon], icon=icon,
+                                popup=folium.Popup(popup))
+                                         
+    return icon_marker
 
 
 def mapPath(G,origin_point,destination_point):
@@ -160,10 +195,16 @@ def mapPath(G,origin_point,destination_point):
     tiles='https://{s}.tile.openstreetmap.de/tiles/osmde/{z}/{x}/{y}.png',
     attr = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')
 
+
     tooltip = "Your Location"
     folium.Marker(
-       [origin_point[0], origin_point[1]], popup="Your Location", tooltip=tooltip
+       [origin_point[0], origin_point[1]], 
+       popup="Your Location", 
+       tooltip=tooltip
     ).add_to(m)
+
+    # calling the data_markers rendering folium.Marker() icon for trees only atm
+    data_markers(features=['trees'],anchor_pt = destination_point).add_to(m)
 
     m = ox.plot_route_folium(G, shortest_route, route_map = m, color='red', tooltip = 'Shortest Path')
     m = ox.plot_route_folium(G, best_route, route_map = m, color='green', tooltip = 'Safe Path')
