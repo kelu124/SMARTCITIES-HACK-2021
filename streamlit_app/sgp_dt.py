@@ -326,7 +326,6 @@ def recomputePrecomputedData():
     simple function to read in data and precompute the data we need for 
     the app
     """
-    # # This call should be cached
 
     G, df_nodes,gTrees, gLamps, gPark, gCCTV = loadShp("data/s4/SingaporeLampsCCTVTrees.shp")
 
@@ -353,8 +352,11 @@ def recomputePrecomputedData():
     logging.info('precomp_data rewritten')
 
 @log_time
-@st.cache(allow_output_mutation=True)#allow_output_mutation=True)
+@st.cache(allow_output_mutation=True)
 def loadShp(path):
+    """
+    Read our data in from source files
+    """
     # Reading the overall network
     logging.info(f'reading network')
     G= nx.readwrite.nx_shp.read_shp(path)
@@ -383,6 +385,10 @@ def loadShp(path):
 @log_time
 @st.cache(allow_output_mutation=True)#allow_output_mutation=True)
 def loadPrecomputedData():
+    """
+    This function loads the precomputed data_obj dictionary to reduce
+    runtime performance
+    """
     with open('data/precomp_data.pickle', 'rb') as handle:
         data_obj = pickle.load(handle)
     return data_obj

@@ -9,7 +9,6 @@ import geopandas as gpd
 from geopy.geocoders import Nominatim
 from shapely.wkt import loads
 from scipy.spatial.distance import cdist
-
 import plotly.graph_objects as go
 
 # Let's brag about digital twins ;)
@@ -21,14 +20,8 @@ st.set_page_config(layout="wide")
 #run to update datasets
 #dt.recomputePrecomputedData()
 
+#read precomputed data
 data_obj = dt.loadPrecomputedData()
-logging.info(data_obj.keys())
-df_nodes = data_obj['df_nodes']
-tree_ll = data_obj['tree_ll']
-lamp_ll = data_obj['lamp_ll']
-park_ll = data_obj['park_ll']
-cctv_ll = data_obj['cctv_ll']
-G = data_obj['G']
 
 
 # Writing the sidebar
@@ -61,19 +54,19 @@ plotPark = st.sidebar.checkbox('Plot Parks',value = False)
 
 #plotting section
 try:
-    start,end = dt.getStartEnd(start_point, end_point, df_nodes)
+    start,end = dt.getStartEnd(start_point, end_point, data_obj['df_nodes'])
     #create the weighted graph from our penalties
-    weighted_G  = dt.modernGraphWeightUpdates(G, prefs)
+    weighted_G  = dt.modernGraphWeightUpdates(data_obj['G'], prefs)
     #plot the route
     fig = dt.mapIt(start,end,weighted_G)
     if plotTrees:
-        dt.add_points_to_figure(fig, *tree_ll, name = 'Trees', color = 'green', opacity =0.5, size = 4)
+        dt.add_points_to_figure(fig, *data_obj['tree_ll'], name = 'Trees', color = 'green', opacity =0.5, size = 4)
     if plotLamps:
-        dt.add_points_to_figure(fig, *lamp_ll, name = 'Lamps', color = 'orange', opacity =0.7, size = 4)
+        dt.add_points_to_figure(fig, *data_obj['lamp_ll'], name = 'Lamps', color = 'orange', opacity =0.7, size = 4)
     if plotPark:
-        dt.add_points_to_figure(fig, *park_ll, name = 'Park', color = 'purple', opacity =0.5, size = 4)
+        dt.add_points_to_figure(fig, *data_obj['park_ll'], name = 'Park', color = 'purple', opacity =0.5, size = 4)
     if plotCCTV:
-        dt.add_points_to_figure(fig, *cctv_ll, name = 'CCTV', color = 'red', opacity =0.5, size = 4)
+        dt.add_points_to_figure(fig, *data_obj['cctv_ll'], name = 'CCTV', color = 'red', opacity =0.5, size = 4)
     st.write(fig)
 except ValueError:
     st.markdown('# Invalid address provided!')
