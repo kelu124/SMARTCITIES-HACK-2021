@@ -13,6 +13,9 @@ from scipy.spatial.distance import cdist
 from shapely.wkt import loads
 from functools import wraps
 import time
+import pickle
+import geopandas as gpd
+
 
 def log_time(func):
     """
@@ -181,7 +184,10 @@ def manipulate_base_graph(G):
     run in a seperate function for performance
     """
     for data in G.edges(data=True):    
-        data[2]['tunnel'] = 1 if data[2]['tunnel'] == 'T' else 0
+        data[2]['tunnel_flag'] = 1 if data[2]['tunnel'] == 'T' else 0
+        data[2]['steps_flag'] = 1 if data[2]['fclass'] == 'steps' else 0
+        data[2]['pedestrian_flag'] = 1 if data[2]['fclass'] in ['pedestrian','footway'] else 0
+
     return G
 
 @log_time
@@ -198,23 +204,17 @@ def modernGraphWeightUpdates(G, prefs):
         coord1 = data[0]
         coord2 = data[1]
         #convert our tunnel flag from text to int        
-        tunnels_flag = 1 if data[2]['tunnel'] == 'T' else 0
-        # create a steps flag 
-        steps_flag = 1 if data[2]['fclass'] == 'steps' else 0
-
-        pedestrian_flag = 1 if data[2]['fclass'] in ['pedestrian','footway'] else 0
-
         # ZE formula to tweak
         data[2]['weight'] = 1
         #Length is a bad
-        data[2]['weight'] = data[2]['weight']  *(data[2]['Length'])
+        data[2]['weight'] = data[2]['weight']  * (data[2]['Length'])
         #these things are all good
         data[2]['weight'] = data[2]['weight'] / (1.0 + 1 * data[2]['CCTV20mRE'] * prefs['cctv'] )
         data[2]['weight'] = data[2]['weight'] / (1.0 + 1*data[2]['Lamps20m']  * prefs['lamps'])
         data[2]['weight'] = data[2]['weight'] / (1.0 + 1*data[2]['Trees20m']  * prefs['trees'])
-        data[2]['weight'] = data[2]['weight'] * (1 + tunnels_flag  * prefs['tunnels'] * avoidance_penalty)
-        data[2]['weight'] = data[2]['weight'] * (1 +  steps_flag* prefs['stairs'] * avoidance_penalty)
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 1* pedestrian_flag  * prefs['pedestrian'])
+        data[2]['weight'] = data[2]['weight'] * (1 + data[2]['tunnel_flag']  * prefs['tunnels'] * avoidance_penalty)
+        data[2]['weight'] = data[2]['weight'] * (1 +  data[2]['steps_flag'] * prefs['stairs'] * avoidance_penalty)
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 1* data[2]['pedestrian_flag']  * prefs['pedestrian'])
         # It is adapted for pedestrians ?
         relativeEase = 1.0
         if data[2]['fclass'] == "pedestrian":
@@ -318,3 +318,77 @@ def add_points_to_figure(fig, lats, lons, name, color, opacity, size):
         lat = lats,
         marker = {'size': size, 'color':color, 'opacity':opacity}))
     return fig
+
+
+@log_time
+def recomputePrecomputedData():
+    """
+    simple function to read in data and precompute the data we need for 
+    the app
+    """
+
+    G, df_nodes,gTrees, gLamps, gPark, gCCTV = loadShp("data/s4/SingaporeLampsCCTVTrees.shp")
+
+    #need to precompute and store these
+    #get the coordinate data for our plotting data and cache the results
+    tree_ll = get_lat_lons(gTrees)
+    lamp_ll = get_lat_lons(gLamps)
+    park_ll = get_lat_lons(gPark)
+    cctv_ll = get_lat_lons(gCCTV)
+    #make some cached data manipulations to our base graph
+    G = manipulate_base_graph(G)
+   
+    data_obj = {
+        'df_nodes': df_nodes,
+        'tree_ll': tree_ll,
+        'lamp_ll': lamp_ll,
+        'park_ll': park_ll,
+        'cctv_ll': cctv_ll,
+        'G': G
+    }
+
+    with open('data/precomp_data.pickle', 'wb') as handle:
+        pickle.dump(data_obj, handle, protocol=pickle.HIGHEST_PROTOCOL)
+    logging.info('precomp_data rewritten')
+
+@log_time
+@st.cache(allow_output_mutation=True)
+def loadShp(path):
+    """
+    Read our data in from source files
+    """
+    # Reading the overall network
+    logging.info(f'reading network')
+    G= nx.readwrite.nx_shp.read_shp(path)
+    # Support to network identification
+    logging.info(f'reading df_nodes')
+    df_nodes = pd.read_csv("data/SG_nodes.txt", index_col=0)
+    # Some cleaning necessary for csv loadup
+    #logging.info(f'reading dfNodes')
+    #dfNodes = pd.read_csv("data/dfNodes.csv.zip")
+    #logging.info(f'updating dfNodes')
+    #dfNodes.Pos = dfNodes.Pos.apply(lambda x: eval(x))
+    #logging.info(f'reading dfEdges')
+    #dfEdges = pd.read_csv("data/dfEdges.csv.zip") 
+    #dfEdges.geometry = dfEdges.geometry.apply(lambda x: loads(x.replace('\'', '')))
+    # Additional layers  
+    logging.info(f'reading gTrees')
+    gTrees = gpd.read_file('data/sTrees.zip') 
+    logging.info(f'reading gTrees')
+    gLamps = gpd.read_file('data/sLamps.zip') 
+    logging.info(f'reading gTrees')
+    gPark = gpd.read_file('data/sParks.zip') 
+    logging.info(f'reading gTrees')
+    gCCTV = gpd.read_file('data/sCCTV.zip') 
+    return G, df_nodes, gTrees, gLamps, gPark, gCCTV
+
+@log_time
+@st.cache(allow_output_mutation=True)#allow_output_mutation=True)
+def loadPrecomputedData():
+    """
+    This function loads the precomputed data_obj dictionary to reduce
+    runtime performance
+    """
+    with open('data/precomp_data.pickle', 'rb') as handle:
+        data_obj = pickle.load(handle)
+    return data_obj
