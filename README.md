@@ -38,21 +38,24 @@ Behind the scenes, the MyWay engine is using a number of  datasets from Singapor
 
 # Running the App
 
+## Live Example
+
+A live example is currently runnin on an Oracle Cloud VM at address:
+http://158.101.211.30:8501/
+
+
 ## Installation Instructions
 
-The easiest way to run this code will be to use a linux environment, this has been tested on Ubuntu.
+The recommended way to run this code will be to use a linux environment with conda, this has been tested on Ubuntu.
 
 In order to successfully run the code in this respository, it is recommended that you create a virtual environment and install the required packages from the requirements.txt file provided. This can be done either through pip or conda Python package managers in the appropriate command line.
 
 ```
-# For pip
-> python -m venv .\venv
-> venv\Scripts\activate
-> pip install -r requirements.txt
+# For conda on 64 bit linux (Recommended)
+> conda create --name venv python=3.8
+> conda activate venv
+> conda install --file environment.yml
 
-# For conda
-> conda create --name venv --file requirements.txt
-> conda activate
 ```
 
 ## Notes on GDAL
@@ -61,7 +64,8 @@ Installing GDAL is relatively simple in certain popular Linux based environments
 
 ```
 #ubuntu commands
-sudo apt install gdal-bin python-gdal python3-gdal python3-rtree
+$ apt update
+$ apt install -y gdal-bin python3-gdal python3-rtree
 ```
 
 On windows you will need to install using this link
