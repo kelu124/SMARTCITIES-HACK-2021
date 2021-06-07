@@ -94,13 +94,13 @@ try:
     #plot the route
     fig = dt.mapIt(start,end,weighted_G)
     if plotTrees:
-        dt.add_points_to_figure(fig, *tree_ll, name = 'Trees', color = 'green', opacity =0.7, size = 6)
+        dt.add_points_to_figure(fig, *tree_ll, name = 'Trees', color = 'green', opacity =0.5, size = 4)
     if plotLamps:
-        dt.add_points_to_figure(fig, *lamp_ll, name = 'Lamps', color = 'orange', opacity =0.9, size = 6)
+        dt.add_points_to_figure(fig, *lamp_ll, name = 'Lamps', color = 'orange', opacity =0.7, size = 4)
     if plotPark:
-        dt.add_points_to_figure(fig, *park_ll, name = 'Park', color = 'purple', opacity =0.7, size = 6)
+        dt.add_points_to_figure(fig, *park_ll, name = 'Park', color = 'purple', opacity =0.5, size = 4)
     if plotCCTV:
-        dt.add_points_to_figure(fig, *cctv_ll, name = 'CCTV', color = 'red', opacity =0.7, size = 6)
+        dt.add_points_to_figure(fig, *cctv_ll, name = 'CCTV', color = 'red', opacity =0.5, size = 4)
     st.write(fig)
 except ValueError:
     st.markdown('# Invalid address provided!')

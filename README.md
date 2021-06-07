@@ -61,12 +61,12 @@ This project combines a number of open datasets. These are:
 
 Dataset | Source Link
 :---|:---
-Network | 
-CCTV |
-Street Lighting |
-Trees | 
-Parks | 
-
+Master Plan 2019 Road layer|  https://data.gov.sg/dataset/master-plan-2019-road-name-layer 
+Full pedestrian network from OSM | https://download.geofabrik.de/asia/malaysia-singapore-brunei.html 
+CCTV | https://data.gov.sg/dataset/lta-road-camera 
+Street Lighting | https://data.gov.sg/dataset/lta-lamp-post 
+Trees | https://exploretrees.sg/ 
+Parks | https://data.gov.sg/dataset/park-facilities
 
 # Good Test Sites
 This is a table of useful addresses for testing the feature preferences
