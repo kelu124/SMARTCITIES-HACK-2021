@@ -6,7 +6,7 @@
 
 Mott MacDonald are delighted to present our #SmartCities Hackathon Solution “MyWay” which provides a safe solution for traversing the beautiful City of Singapore for pedestrians, improving mental health, and feeling of safety and security.
 
-We are excited to be involved in the #SmartCities Hackathon: it strongly resonates with our purpose “To improve society by considering social outcomes in everything we do; relentlessly focusing on excellence and digital innovation, transforming our clients' businesses, our communities and employee opportunities.” We have assembled a truly, diverse, international team to take part in the Hackathon.
+We are excited to be involved in the #SmartCities Hackathon: it strongly resonates with our purpose *to improve society by considering social outcomes in everything we do; relentlessly focusing on excellence and digital innovation, transforming our clients' businesses, our communities and employee opportunities*. We have assembled a truly, diverse, international team to take part in the Hackathon, spanning from June 4th to June 7th 2021    .
 
 
 ## Repository Ownership
@@ -20,7 +20,7 @@ We are excited to be involved in the #SmartCities Hackathon: it strongly resonat
 
 ## Description
 
-Today, the digital assistants helps users recommending the best path. MyWay recommends the most enjoyable journey, taking advantage of rapid-prototyping digital solutions on the front-end, but also tapping Oracle OCI to host a linux Virtual machine, supporting a streamlit-powered interface, as well as the MyWay engine. Data comes from the Singapore open datasets.
+Today, the digital assistants helps users recommending the best path. **MyWay recommends the most enjoyable journey**, taking advantage of rapid-prototyping digital solutions on the front-end, but also tapping **Oracle OCI** to host a linux Virtual machine, supporting a streamlit-powered interface, as well as the MyWay engine. Data comes from the **Singapore open datasets**.
 
 We also made use of the available street networks in Open Street Maps datasets, but a heavy rework of this dataset was required to improve the representation of the networks’ interconnectivity. For this prototype we have only included a portion of the Singapore road map network in order to reduce the amount of computational work required. 
 The MyWay engine is building on top of existing path-finding algorithms available in the python Networkx package. We have combined the open data sets with the transport network by splitting the transport network into chunks no larger than 100m and then looking at the number of features of interest for each of those 100m chunks. We then update calculate an “effective distance” for each chunk of the network based on our features and users input preferences, making the length longer if it is undesirable and shorter if it is desirable. We then find the shortest path from the users start location to the end location using this “Effective distance” and display that to the user.
