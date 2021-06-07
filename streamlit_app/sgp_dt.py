@@ -10,7 +10,7 @@ from geopy.geocoders import Nominatim
 import numpy as np
 from scipy.spatial.distance import cdist
 import plotly.graph_objects as go
-
+import streamlit as st
 #from streamlit_folium import folium_static
 #import folium
 
@@ -175,16 +175,27 @@ def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
     Takes a graph G as input and adds the weights
     """
     weighted_G = nx.Graph()
+
     for data in G.edges(data=True):
         data=data
         coord1 = data[0]
         coord2 = data[1]
 
+        
+        if data[2]['CCTV20mRE'] > 0:
+            cctv_present = 1
+        else:
+            cctv_present = 0
+
+        cctv_present = data[2]['CCTV20mRE']
         # ZE formula to tweak
-        data[2]['weight'] = data[2]['Length']
-        data[2]['weight'] = data[2]['weight'] * (1.0 + 0.1*data[2]['CCTV50mRE'] * cctv_perf )
-        data[2]['weight'] = data[2]['weight'] * (1.0 + 0.1*data[2]['Lamps50m']  * lamps_perf) 
-        data[2]['weight'] = data[2]['weight'] * (1.0 + 0.1*data[2]['Trees10m']  * trees_perf) 
+        data[2]['weight'] = 1
+        #Length is a bad
+        data[2]['weight'] = data[2]['weight']  *(data[2]['Length'])
+        #these things are all good
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5 * cctv_present * cctv_perf )
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Lamps20m']  * lamps_perf)
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Trees20m']  * trees_perf) 
 
         # It is adapted for pedestrians ?
         relativeEase = 1.0
@@ -224,11 +235,8 @@ def plot_path(lat, long, origin_point, destination_point):
     """
     # adding the lines joining the nodes
     
-
-    
     fig = go.Figure()
-     
-    
+    #add our optimal path
     fig.add_trace(go.Scattermapbox(
         name = "Optimal path - nodes",
         mode = "lines",
@@ -236,7 +244,6 @@ def plot_path(lat, long, origin_point, destination_point):
         lat = lat,
         marker = {'size': 10},
         line = dict(width = 4.5, color = 'blue')))
-
 
     # adding source marker
     fig.add_trace(go.Scattermapbox(
@@ -265,4 +272,22 @@ def plot_path(lat, long, origin_point, destination_point):
                           'center': {'lat': lat_center, 
                           'lon': long_center},
                           'zoom': 13})
+    return fig
+
+
+@st.cache(allow_output_mutation=True)
+def get_lat_lons(gdf):
+    lats = [p.y for p in gdf.geometry]
+    lons = [p.x for p in gdf.geometry]
+    return (lats, lons)
+
+
+def add_points_to_figure(fig, lats, lons, name, color):
+    # adding destination marker
+    fig.add_trace(go.Scattermapbox(
+        name = name,
+        mode = "markers",
+        lon = lons,
+        lat = lats,
+        marker = {'size': 8, 'color':color}))
     return fig
