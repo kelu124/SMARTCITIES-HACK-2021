@@ -13,7 +13,13 @@ from scipy.spatial.distance import cdist
 from shapely.wkt import loads
 from functools import wraps
 import time
-import pickle
+
+import socket 
+if socket.gethostname() == "kelu-e7250":
+    import pickle5 as pickle
+else:
+    import pickle
+
 import geopandas as gpd
 
 
@@ -29,6 +35,17 @@ def log_time(func):
         logging.info(f"Section {func.__name__} completed in: {te} seconds")
         return result    
     return timed
+
+def cache(*args, **kwargs):
+    def decorator(func):
+        try:
+            __IPYTHON__  # type: ignore
+            # We are in a Jupyter environment, so don't apply st.cache
+            return func
+        except NameError:
+            return st.cache(func, *args, **kwargs)
+
+    return decorator
 
 @log_time
 def getStartEnd(start_point,end_point,df_nodes,dummy=False):
@@ -140,7 +157,7 @@ def mapIt(start,end,weighted_G):
         st.markdown("## !! Address not found in network")
         raise ValueError
         
-        
+    border = []
     # And getting the list of the nodes position tuples
     lat,lon = [],[]
     for r in route:
@@ -151,7 +168,7 @@ def mapIt(start,end,weighted_G):
     # Starting the plot
     fig = plot_path(lat, lon, start, end)
     #fig = addshortest(fig, shortest)
-    return fig
+    return fig, route, border
 
 @log_time
 def get_weighted_graph(G,security=1,cctv_pref=5.0,lamps_pref=5.0):
@@ -177,7 +194,7 @@ def get_weighted_graph(G,security=1,cctv_pref=5.0,lamps_pref=5.0):
     return weighted_G, pos, labels
 
 @log_time
-@st.cache(allow_output_mutation=True)
+@cache(allow_output_mutation=True)
 def manipulate_base_graph(G):
     """
     convert the tunnels data in the base attribute to be numeric
@@ -296,7 +313,7 @@ def plot_path(lat, long, origin_point, destination_point):
     return fig
 
 @log_time
-@st.cache(allow_output_mutation=True)
+@cache(allow_output_mutation=True)
 def get_lat_lons(gdf):
     """
     get the lat and longs for points in a geodataframe
@@ -319,6 +336,19 @@ def add_points_to_figure(fig, lats, lons, name, color, opacity, size):
         marker = {'size': size, 'color':color, 'opacity':opacity}))
     return fig
 
+@log_time
+def add_gdf_to_figure(fig, gdf, name, color, opacity, size):
+    """
+    adds a set of points to a chart
+    """
+    # adding destination marker
+    fig.add_trace(go.Scattermapbox(
+        name = name,
+        mode = "markers",
+        lon = gdf.x,
+        lat = gdf.y,
+        marker = {'size': size, 'color':color, 'opacity':opacity}))
+    return fig
 
 @log_time
 def recomputePrecomputedData():
@@ -340,10 +370,14 @@ def recomputePrecomputedData():
    
     data_obj = {
         'df_nodes': df_nodes,
-        'tree_ll': tree_ll,
-        'lamp_ll': lamp_ll,
-        'park_ll': park_ll,
-        'cctv_ll': cctv_ll,
+        'tree_ll' : tree_ll,
+        'lamp_ll' : lamp_ll,
+        'park_ll' : park_ll,
+        'cctv_ll' : cctv_ll,
+        #"gTrees"  : gTrees,
+        #"gLamps"  : gLamps,
+        #"gPark"   : gPark,
+        #"gCCTV"   : gCCTV,
         'G': G
     }
 
@@ -352,7 +386,7 @@ def recomputePrecomputedData():
     logging.info('precomp_data rewritten')
 
 @log_time
-@st.cache(allow_output_mutation=True)
+@cache(allow_output_mutation=True)
 def loadShp(path):
     """
     Read our data in from source files
@@ -374,16 +408,16 @@ def loadShp(path):
     # Additional layers  
     logging.info(f'reading gTrees')
     gTrees = gpd.read_file('data/sTrees.zip') 
-    logging.info(f'reading gTrees')
+    logging.info(f'reading sLamps')
     gLamps = gpd.read_file('data/sLamps.zip') 
-    logging.info(f'reading gTrees')
+    logging.info(f'reading sParks')
     gPark = gpd.read_file('data/sParks.zip') 
-    logging.info(f'reading gTrees')
+    logging.info(f'reading sCCTV')
     gCCTV = gpd.read_file('data/sCCTV.zip') 
     return G, df_nodes, gTrees, gLamps, gPark, gCCTV
 
 @log_time
-@st.cache(allow_output_mutation=True)#allow_output_mutation=True)
+@cache(allow_output_mutation=True)#allow_output_mutation=True)
 def loadPrecomputedData():
     """
     This function loads the precomputed data_obj dictionary to reduce

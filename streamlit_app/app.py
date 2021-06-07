@@ -58,7 +58,8 @@ try:
     #create the weighted graph from our penalties
     weighted_G  = dt.modernGraphWeightUpdates(data_obj['G'], prefs)
     #plot the route
-    fig = dt.mapIt(start,end,weighted_G)
+    fig, route, border = dt.mapIt(start,end,weighted_G)
+    st.write(route)
     if plotTrees:
         dt.add_points_to_figure(fig, *data_obj['tree_ll'], name = 'Trees', color = 'green', opacity =0.5, size = 4)
     if plotLamps:
