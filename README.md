@@ -41,7 +41,7 @@ Behind the scenes, the MyWay engine is using a number of  datasets from Singapor
 ## Live Example
 
 A live example is currently runnin on an Oracle Cloud VM at address:
-http://158.101.211.30:8502/
+http://158.101.211.30:8501/
 
 
 ## Installation Instructions
