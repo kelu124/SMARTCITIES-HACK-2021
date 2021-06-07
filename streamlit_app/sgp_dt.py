@@ -11,7 +11,23 @@ import shapely
 from geopy.geocoders import Nominatim
 from scipy.spatial.distance import cdist
 from shapely.wkt import loads
+from functools import wraps
 
+
+def log_time(func):
+    """
+    decorator to time function and log time
+    """
+    @wraps(func)
+    def timed(*args, **kw):
+        ts = time.time()
+        result = func(*args, **kw)
+        te = time.time() - ts
+        logging.info(f"Section {func.__name__} completed in: {te} seconds")
+        return result    
+    return timed
+
+@log_time
 def getStartEnd(start_point,end_point,df_nodes,dummy=False):
     """
     takes two text addresses start_point and end_point and returns
@@ -60,6 +76,7 @@ def getStartEnd(start_point,end_point,df_nodes,dummy=False):
     end=df_pts.iloc[1]['closest']
     return start,end
 
+@log_time
 def getLL(gdf):
     """
     Takes a geodataframe gdf and returns the lat and long for the features as 
@@ -82,6 +99,7 @@ def getLL(gdf):
             lons = np.append(lons, None)
     return lats,lons
 
+@log_time
 def addshortest(fig, shortest):
     """
     adds the shortest path from shortest to 
@@ -103,6 +121,7 @@ def addshortest(fig, shortest):
 
     return fig
 
+@log_time
 def mapIt(start,end,weighted_G):
     """
     generates a route through the network by finding the shortest route using our custom weights
@@ -131,6 +150,7 @@ def mapIt(start,end,weighted_G):
     #fig = addshortest(fig, shortest)
     return fig
 
+@log_time
 def get_weighted_graph(G,security=1,cctv_pref=5.0,lamps_pref=5.0):
     """
     Takes a graph G as input and adds the weights
@@ -153,6 +173,7 @@ def get_weighted_graph(G,security=1,cctv_pref=5.0,lamps_pref=5.0):
     labels = nx.get_edge_attributes(weighted_G,'weight')
     return weighted_G, pos, labels
 
+@log_time
 @st.cache(allow_output_mutation=True)
 def manipulate_base_graph(G):
     """
@@ -163,6 +184,7 @@ def manipulate_base_graph(G):
         data[2]['tunnel'] = 1 if data[2]['tunnel'] == 'T' else 0
     return G
 
+@log_time
 def modernGraphWeightUpdates(G, prefs):
     """
     Takes a graph G as input and adds the weights
@@ -207,10 +229,13 @@ def modernGraphWeightUpdates(G, prefs):
 
     return weighted_G
 
+@log_time
 def closest_point(point, points):
     """ Find closest point from a list of points. """
     return points[cdist([point], points).argmin()]
 
+
+@log_time
 def plot_path(lat, long, origin_point, destination_point):
     
     """
@@ -229,7 +254,7 @@ def plot_path(lat, long, origin_point, destination_point):
     # adding the lines joining the nodes
     
     fig = go.Figure(layout = go.Layout(height = 600, width = 1000))
-    
+
     #add our optimal path
     fig.add_trace(go.Scattermapbox(
         name = "Optimal path - nodes",
@@ -270,6 +295,7 @@ def plot_path(lat, long, origin_point, destination_point):
                           'zoom': 16})
     return fig
 
+@log_time
 @st.cache(allow_output_mutation=True)
 def get_lat_lons(gdf):
     """
@@ -279,7 +305,7 @@ def get_lat_lons(gdf):
     lons = [p.x for p in gdf.geometry]
     return (lats, lons)
 
-
+@log_time
 def add_points_to_figure(fig, lats, lons, name, color, opacity, size):
     """
     adds a set of points to a chart
