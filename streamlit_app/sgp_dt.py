@@ -1,26 +1,26 @@
-#import streamlit as st
-
 import networkx as nx
 import matplotlib.pyplot as plt 
 import pandas as pd
 import seaborn as sns
+import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
 import logging
 import geopandas
+import shapely
 from geopy.geocoders import Nominatim
-import numpy as np
 from scipy.spatial.distance import cdist
-import plotly.graph_objects as go
-import streamlit as st
-#from streamlit_folium import folium_static
-#import folium
-
 from shapely.wkt import loads
 
-
-import shapely
-
 def getStartEnd(start_point,end_point,df_nodes,dummy=False):
-   
+    """
+    takes two text addresses start_point and end_point and returns
+    the nearest nodes in the network to those coordinates
+    """
+    logging.info(f'start_point: {type(start_point)}')
+    
+    if start_point == '' or end_point == '':
+        raise ValueError
     if dummy: #using it because i reached Nominatim limit
         # it selects two points around, artificial I agree but well..
         start_point = (103.855030, 1.2759796) 
@@ -28,22 +28,25 @@ def getStartEnd(start_point,end_point,df_nodes,dummy=False):
         x_end = end_point[0]
         y_end = end_point[1]
         x_start = start_point[0]
-        y_start = start_point[1]   
+        y_start = start_point[1]
 
     else:
         # ElSe, we'll be asking for more info online
         locator = Nominatim(user_agent="http://101.98.38.221:8501")
         if start_point:
             location_s = locator.geocode(start_point)
-
+            try:
+                x_start = location_s.longitude
+                y_start = location_s.latitude
+            except:
+                st.text('start location bad')
+                raise ValueError
         if end_point:
             location_e = locator.geocode(end_point)
 
         x_end = location_e.longitude
         y_end = location_e.latitude
-        x_start = location_s.longitude
-        y_start = location_s.latitude   
-                
+
     df_pts = pd.DataFrame([[x_start,y_start],[x_end,y_end]],columns=['x','y'])
     df_nodes['point'] = [(x, y) for x,y in zip(df_nodes['x'], df_nodes['y'])]
     df_pts['point'] = [(x, y) for x,y in zip(df_pts['x'], df_pts['y'])]
@@ -51,15 +54,13 @@ def getStartEnd(start_point,end_point,df_nodes,dummy=False):
     
     start=df_pts.iloc[0]['closest']
     end=df_pts.iloc[1]['closest']
-    #st.write("#Closest",df_pts)
-    #st.write("INIT",start_point,end_point)
-    #st.write("APRES",start,end)
     return start,end
 
-
-
-
 def getLL(gdf):
+    """
+    Takes a geodataframe gdf and returns the lat and long for the features as 
+    lists
+    """
     # Used for plotting the real lines from a path
     lats, lons = [], []
     for feature in gdf.geometry:
@@ -77,11 +78,11 @@ def getLL(gdf):
             lons = np.append(lons, None)
     return lats,lons
 
-
-
-
 def addshortest(fig, shortest):
-
+    """
+    adds the shortest path from shortest to 
+    the plotly mapbox plot fig
+    """
     LatShort,LonShort = [],[]
     for r in shortest:
         pt=[r[0],r[1]]
@@ -98,19 +99,19 @@ def addshortest(fig, shortest):
 
     return fig
 
-
-
-def mapIt(start,end,weighted_G,dfNodes,dfEdges):
-    
-    # Creating the weighted network based on the user parameters
-   
-    #st.write(start,end)
-    # Now that we know these nodes, we can find the shorted path
+def mapIt(start,end,weighted_G):
+    """
+    generates a route through the network by finding the shortest route using our custom weights
+    inputs:
+    start: start node of route in the network
+    end: end node of route in the network
+    weighted_G: networkx graph of the network which start and end are in
+    """    
     try:
-        route    = nx.shortest_path(weighted_G ,source=start, target=end, weight = 'weight')
+        route = nx.shortest_path(weighted_G ,source=start, target=end, weight = 'weight')
         #shortest = nx.shortest_path(G ,source=start, target=end, weight = "Length")
     except:
-        return "## !! Address not found"
+        return "## !! Address not found in network"
         
     # And getting the list of the nodes position tuples
     lat,lon = [],[]
@@ -118,34 +119,11 @@ def mapIt(start,end,weighted_G,dfNodes,dfEdges):
         pt=[r[0],r[1]]
         lat.append(r[1])
         lon.append(r[0]) 
-    #st.write(route)
-    # Now that we know the latlon of the nodes, we can find the polylines linking them
-    #nodes, lines = [], []
-    #st.write(dfNodes.head(3))
-    #for r in route:
-    #    NODE = dfNodes[dfNodes.Pos == r]
-    ##    if len(NODE):
-    #        nodes.append(NODE.iloc[0].ID)
-
-    #st.write(nodes)
-    #for k in range(len(nodes)-1):
-    #    R = dfEdges[((dfEdges.TO == nodes[k]) & (dfEdges.FROM == nodes[k+1])) | ((dfEdges.TO == nodes[k+1]) & (dfEdges.FROM == nodes[k]))]
-    ##    if len(R):
-    #        lines.append(R)
-    #df = pd.concat(lines)
-    #df["geometry"] = df["geometry"].apply(lambda x: loads(x.replace('\'', '')) )
-    #gdf = geopandas.GeoDataFrame(df, geometry='geometry')
 
     # Starting the plot
     fig = plot_path(lat, lon, start, end)
     #fig = addshortest(fig, shortest)
     return fig
-
-
-
-
-
-
 
 def get_weighted_graph(G,security=1,cctv_perf=5.0,lamps_perf=5.0):
     """
@@ -168,8 +146,6 @@ def get_weighted_graph(G,security=1,cctv_perf=5.0,lamps_perf=5.0):
     labels = nx.get_edge_attributes(weighted_G,'weight')
     return weighted_G, pos, labels
 
-
-
 def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
     """
     Takes a graph G as input and adds the weights
@@ -180,7 +156,6 @@ def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
         data=data
         coord1 = data[0]
         coord2 = data[1]
-
         
         if data[2]['CCTV20mRE'] > 0:
             cctv_present = 1
@@ -211,12 +186,9 @@ def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
 
     return weighted_G
 
-
 def closest_point(point, points):
     """ Find closest point from a list of points. """
     return points[cdist([point], points).argmin()]
-
-
 
 def plot_path(lat, long, origin_point, destination_point):
     
@@ -276,15 +248,20 @@ def plot_path(lat, long, origin_point, destination_point):
                           'zoom': 16})
     return fig
 
-
 @st.cache(allow_output_mutation=True)
 def get_lat_lons(gdf):
+    """
+    get the lat and longs for points in a geodataframe
+    """
     lats = [p.y for p in gdf.geometry]
     lons = [p.x for p in gdf.geometry]
     return (lats, lons)
 
 
 def add_points_to_figure(fig, lats, lons, name, color, opacity, size):
+    """
+    adds a set of points to a chart
+    """
     # adding destination marker
     fig.add_trace(go.Scattermapbox(
         name = name,
