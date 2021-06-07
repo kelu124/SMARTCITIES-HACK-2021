@@ -16,6 +16,8 @@ We are excited to be involved in the #SmartCities Hackathon, it resonates with o
 * **Original Author(s)**: the MM team !!
 * **Contact Details for Current Repository Owner(s)**: luc.jonveaux@mottmac.com
 
+# Running the App
+
 ## Installation Instructions
 
 The easiest way to run this code will be to use a linux environment, this has been tested on Ubuntu.
@@ -55,14 +57,23 @@ On windows you will need to install using this link
 https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows
 
 
-## Datasets used
-This project combines a number of open datasets.
-These are:
+# Datasets Used
+This project combines a number of open datasets. These are:
 
- * 
+Dataset | Source Link
+:---|:---
+Network | 
+CCTV |
+Street Lighting |
+Trees | 
+Parks | 
 
 
-Good test sites
-Avoid Stairs
-The Landmark, Singapore
-Smith Street, Singapore
+# Good Test Sites
+This is a table of useful addresses for testing the feature preferences
+
+Feature | Start Address | End Address
+:---:|:---:|:---:
+Avoid Stairs | The Landmark, Singapore | Smith Street, Singapore
+Prioritise Trees| Masjid Sultan, Singapore | Rochor Link Bridge, Singapore
+Prioritise Lighting| Masjid Sultan, Singapore | Rochor Link Bridge, Singapore
