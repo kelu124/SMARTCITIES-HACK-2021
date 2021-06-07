@@ -1,6 +1,6 @@
 # MyWay
 
-![SingaporeMap](./src/imgs/map.png)
+![SingaporeMap](./src/imgs/logo_map.png)
 
 ## Description
 
