@@ -16,8 +16,8 @@ import plotly.graph_objects as go
 # Let's brag about digital twins ;)
 import sgp_dt as dt
 
-#add dict of personas with prefilled defaults for the app for the demo
-personas = {}
+#set wide layout
+st.set_page_config(layout="wide")
 
 
 @st.cache(allow_output_mutation=True)#allow_output_mutation=True)
@@ -85,12 +85,12 @@ park_ll = dt.get_lat_lons(gPark)
 cctv_ll = dt.get_lat_lons(gCCTV)
 
 if plotTrees:
-    dt.add_points_to_figure(fig, *tree_ll, name = 'Trees', color = 'green')
+    dt.add_points_to_figure(fig, *tree_ll, name = 'Trees', color = 'green', opacity =0.7, size = 6)
 if plotLamps:
-    dt.add_points_to_figure(fig, *lamp_ll, name = 'Lamps', color = 'orange')
+    dt.add_points_to_figure(fig, *lamp_ll, name = 'Lamps', color = 'orange', opacity =0.9, size = 6)
 if plotPark:
-    dt.add_points_to_figure(fig, *park_ll, name = 'Park', color = 'purple')
+    dt.add_points_to_figure(fig, *park_ll, name = 'Park', color = 'purple', opacity =0.7, size = 6)
 if plotCCTV:
-    dt.add_points_to_figure(fig, *cctv_ll, name = 'CCTV', color = 'red')
+    dt.add_points_to_figure(fig, *cctv_ll, name = 'CCTV', color = 'red', opacity =0.7, size = 6)
 
 st.write(fig)

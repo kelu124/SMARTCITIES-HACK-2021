@@ -235,7 +235,7 @@ def plot_path(lat, long, origin_point, destination_point):
     """
     # adding the lines joining the nodes
     
-    fig = go.Figure()
+    fig = go.Figure(layout = go.Layout(height = 600, width = 1000))
     #add our optimal path
     fig.add_trace(go.Scattermapbox(
         name = "Optimal path - nodes",
@@ -249,29 +249,31 @@ def plot_path(lat, long, origin_point, destination_point):
     fig.add_trace(go.Scattermapbox(
         name = "Source",
         mode = "markers",
-        lon = [origin_point[1]],
-        lat = [origin_point[0]],
-        marker = {'size': 12, 'color':"red"}))
+        lon = [origin_point[0]],
+        lat = [origin_point[1]],
+        marker = {'size': 12, 'color':"black"}))
      
     # adding destination marker
     fig.add_trace(go.Scattermapbox(
         name = "Destination",
         mode = "markers",
-        lon = [destination_point[1]],
-        lat = [destination_point[0]],
-        marker = {'size': 12, 'color':'green'}))
+        lon = [destination_point[0]],
+        lat = [destination_point[1]],
+        marker = {'size': 12, 'color':'blue'}))
     
     # getting center for plots:
     lat_center = np.mean(lat)
     long_center = np.mean(long)
     # defining the layout using mapbox_style
-    fig.update_layout(mapbox_style="open-street-map",#stamen-terrain",
+    #map options:
+    #"open-street-map", "carto-positron", "carto-darkmatter", "stamen-terrain", "stamen-toner","stamen-watercolor"
+    fig.update_layout(mapbox_style="carto-positron",
         mapbox_center_lat = 30, mapbox_center_lon=-80)
     fig.update_layout(margin={"r":0,"t":0,"l":0,"b":0},
                       mapbox = {
                           'center': {'lat': lat_center, 
                           'lon': long_center},
-                          'zoom': 13})
+                          'zoom': 16})
     return fig
 
 
@@ -282,12 +284,12 @@ def get_lat_lons(gdf):
     return (lats, lons)
 
 
-def add_points_to_figure(fig, lats, lons, name, color):
+def add_points_to_figure(fig, lats, lons, name, color, opacity, size):
     # adding destination marker
     fig.add_trace(go.Scattermapbox(
         name = name,
         mode = "markers",
         lon = lons,
         lat = lats,
-        marker = {'size': 8, 'color':color}))
+        marker = {'size': size, 'color':color, 'opacity':opacity}))
     return fig
