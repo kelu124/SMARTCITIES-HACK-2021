@@ -12,7 +12,7 @@ We are excited to be involved in the #SmartCities Hackathon: it strongly resonat
 ## Repository Ownership
 
 * **Practice**: Cities
-* **Sector**: Digital Twins
+* **Sector**: Green Cities, Safety, Digital Twins
 * **Original Author(s)**: the MM team
 * **Contact Details for Current Repository Owner(s)**: luc.jonveaux@mottmac.com
 
@@ -68,10 +68,13 @@ https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows
 
 Clone the repository into a folder and activate the virtual environment or the conda environment.
 Then run the following commands:
+
 ```
 cd streamlit_app
 streamlit run app.py
 ```
+
+This will open the app on `localhost:8501 `. 
 
 # Datasets Used
 
@@ -86,9 +89,13 @@ Street Lighting | https://data.gov.sg/dataset/lta-lamp-post
 Trees | https://exploretrees.sg/ 
 Parks | https://data.gov.sg/dataset/park-facilities
 
+A heavy rework of the network dataset was required to improve the representation of the networks’ interconnectivity, tackled using ArcGIS tools.
+
+Our solution uses a custom shapefile that integrates different layers merged over the center of Singapore downtown.  
+
 # Good Test Sites
 
-This is a table of useful addresses for testing the feature preferences
+This is a table of useful addresses for testing the feature preferences of users.
 
 Feature | Start Address | End Address
 :---:|:---:|:---:
