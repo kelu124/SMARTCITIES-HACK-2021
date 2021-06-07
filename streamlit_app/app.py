@@ -49,6 +49,7 @@ def loadShp(path):
 
 # This call should be cached
 #G, df_nodes, dfNodes, dfEdges, gTrees, gLamps, gPark, gCCTV = loadShp("data/s4/SingaporeLampsCCTVTrees.shp")
+G, df_nodes,gTrees, gLamps, gPark, gCCTV = loadShp("data/s4/SingaporeLampsCCTVTrees.shp")
 #get the coordinate data for our plotting data and cache the results
 tree_ll = dt.get_lat_lons(gTrees)
 lamp_ll = dt.get_lat_lons(gLamps)

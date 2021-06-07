@@ -12,7 +12,7 @@ from geopy.geocoders import Nominatim
 from scipy.spatial.distance import cdist
 from shapely.wkt import loads
 from functools import wraps
-
+import time
 
 def log_time(func):
     """
