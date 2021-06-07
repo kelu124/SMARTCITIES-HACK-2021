@@ -37,3 +37,7 @@ Insert instructions on how to run the code here.
 ```
 
 ```
+
+## Notes on GDAL
+A lot of the functionality in this app is based on the GDAL library.
+Installing GDAL is relatively simple in Linux based environments

@@ -53,16 +53,18 @@ cctv_ll = dt.get_lat_lons(gCCTV)
 start_point = st.sidebar.text_input('Choose starting point...',"Masjid Sultan, Singapore") 
 end_point = st.sidebar.text_input('Choose destination...',"Rochor Link Bridge, Singapore") 
 
-
+prefs = {}
 st.sidebar.markdown('# Route Priorities')
 st.sidebar.markdown('### Safety')
-cctv_pref = 1 if st.sidebar.checkbox('Prioritise CCTV',value = False) else 0
-lamps_pref = 1 if st.sidebar.checkbox('Prioritise Street Lighting',value = False) else 0
-tunnels_pref = 1 if st.sidebar.checkbox('Avoid Tunnels',value = False) else 0
+prefs['cctv'] = 1 if st.sidebar.checkbox('Prioritise CCTV',value = False) else 0
+prefs['lamps'] = 1 if st.sidebar.checkbox('Prioritise Street Lighting',value = False) else 0
+prefs['tunnels'] = 1 if st.sidebar.checkbox('Avoid Tunnels',value = False) else 0
+
+st.sidebar.markdown('### Mobility')
+prefs['stairs'] = 1 if st.sidebar.checkbox('Avoid Stairs',value = False) else 0
 
 st.sidebar.markdown('### Pleasure')
-trees_pref = 1 if st.sidebar.checkbox('Prioritise Trees',value = False) else 0
-
+prefs['trees'] = 1 if st.sidebar.checkbox('Prioritise Trees',value = False) else 0
 
 st.sidebar.markdown('# Plot Data')
 #add boxes to overlay the data
@@ -79,7 +81,7 @@ plotPark = st.sidebar.checkbox('Plot Parks',value = False)
 try:
     start,end = dt.getStartEnd(start_point, end_point, df_nodes)
     #create the weighted graph from our penalties
-    weighted_G  = dt.modernGraphWeightUpdates(G,cctv_pref,lamps_pref,trees_pref, tunnels_pref)
+    weighted_G  = dt.modernGraphWeightUpdates(G, prefs)
     #plot the route
     fig = dt.mapIt(start,end,weighted_G)
     if plotTrees:

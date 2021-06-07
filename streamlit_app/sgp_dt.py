@@ -157,29 +157,33 @@ def manipulate_base_graph(G):
         data[2]['tunnel'] = 1 if data[2]['tunnel'] == 'T' else 0
     return G
 
-def modernGraphWeightUpdates(G,cctv_pref=0,lamps_pref=0,trees_pref=0, tunnels_pref = 0):
+def modernGraphWeightUpdates(G, prefs):
     """
     Takes a graph G as input and adds the weights
     """
+    avoidance_penalty = 100
+
     weighted_G = nx.Graph()
 
     for data in G.edges(data=True):
         data=data
         coord1 = data[0]
         coord2 = data[1]
-        #logging.info(f"{type(data[2]['tunnel'])}")
-        
-        data[2]['tunnel'] = 1 if data[2]['tunnel'] == 'T' else 0
+        #convert our tunnel flag from text to int        
+        tunnels_flag = 1 if data[2]['tunnel'] == 'T' else 0
+        # create a steps flag 
+        steps_flag = 1 if data[2]['fclass'] == 'steps' else 0
 
         # ZE formula to tweak
         data[2]['weight'] = 1
         #Length is a bad
         data[2]['weight'] = data[2]['weight']  *(data[2]['Length'])
         #these things are all good
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5 * data[2]['CCTV20mRE'] * cctv_pref )
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Lamps20m']  * lamps_pref)
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Trees20m']  * trees_pref)
-        data[2]['weight'] = data[2]['weight'] * (1 + data[2]['tunnel']  * tunnels_pref)
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5 * data[2]['CCTV20mRE'] * prefs['cctv'] )
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Lamps20m']  * prefs['lamps'])
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Trees20m']  * prefs['trees'])
+        data[2]['weight'] = data[2]['weight'] * (1 + tunnels_flag  * prefs['tunnels'] * avoidance_penalty)
+        data[2]['weight'] = data[2]['weight'] * (1 +  steps_flag* prefs['stairs'] * avoidance_penalty)
 
         # It is adapted for pedestrians ?
         relativeEase = 1.0
