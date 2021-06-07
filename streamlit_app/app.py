@@ -45,6 +45,9 @@ tree_ll = dt.get_lat_lons(gTrees)
 lamp_ll = dt.get_lat_lons(gLamps)
 park_ll = dt.get_lat_lons(gPark)
 cctv_ll = dt.get_lat_lons(gCCTV)
+#make some cached data manipulations to our base graph
+#G = dt.manipulate_base_graph(G)
+
 
 # Writing the sidebar
 start_point = st.sidebar.text_input('Choose starting point...',"Masjid Sultan, Singapore") 
@@ -53,11 +56,12 @@ end_point = st.sidebar.text_input('Choose destination...',"Rochor Link Bridge, S
 
 st.sidebar.markdown('# Route Priorities')
 st.sidebar.markdown('### Safety')
-cctv_perf = 1 if st.sidebar.checkbox('Prioritise CCTV',value = False) else 0
-lamps_perf = 1 if st.sidebar.checkbox('Prioritise Street Lighting',value = False) else 0
+cctv_pref = 1 if st.sidebar.checkbox('Prioritise CCTV',value = False) else 0
+lamps_pref = 1 if st.sidebar.checkbox('Prioritise Street Lighting',value = False) else 0
+tunnels_pref = 1 if st.sidebar.checkbox('Avoid Tunnels',value = False) else 0
 
 st.sidebar.markdown('### Pleasure')
-trees_perf = 1 if st.sidebar.checkbox('Prioritise Trees',value = False) else 0
+trees_pref = 1 if st.sidebar.checkbox('Prioritise Trees',value = False) else 0
 
 
 st.sidebar.markdown('# Plot Data')
@@ -75,7 +79,7 @@ plotPark = st.sidebar.checkbox('Plot Parks',value = False)
 try:
     start,end = dt.getStartEnd(start_point, end_point, df_nodes)
     #create the weighted graph from our penalties
-    weighted_G  = dt.modernGraphWeightUpdates(G,cctv_perf,lamps_perf,trees_perf)
+    weighted_G  = dt.modernGraphWeightUpdates(G,cctv_pref,lamps_pref,trees_pref, tunnels_pref)
     #plot the route
     fig = dt.mapIt(start,end,weighted_G)
     if plotTrees:

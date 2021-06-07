@@ -125,9 +125,10 @@ def mapIt(start,end,weighted_G):
     #fig = addshortest(fig, shortest)
     return fig
 
-def get_weighted_graph(G,security=1,cctv_perf=5.0,lamps_perf=5.0):
+def get_weighted_graph(G,security=1,cctv_pref=5.0,lamps_pref=5.0):
     """
     Takes a graph G as input and adds the weights
+    deprecated
     """
     weighted_G = nx.Graph()
     for data in G.edges(data=True):
@@ -136,7 +137,7 @@ def get_weighted_graph(G,security=1,cctv_perf=5.0,lamps_perf=5.0):
         coord2 = data[1]
         if security:
             # ZE formula to tweak
-            data[2]['weight']=(data[2]['CCTV50mRE']*cctv_perf)+(data[2]['Lamps50m']*lamps_perf)+data[2]['Length']
+            data[2]['weight']=(data[2]['CCTV50mRE']*cctv_pref)+(data[2]['Lamps50m']*lamps_pref)+data[2]['Length']
             weighted_G.add_edge(coord1,coord2,weight=data[2]['weight'])
         else:
             data[2]['weight']=data[2]['Length']
@@ -146,7 +147,17 @@ def get_weighted_graph(G,security=1,cctv_perf=5.0,lamps_perf=5.0):
     labels = nx.get_edge_attributes(weighted_G,'weight')
     return weighted_G, pos, labels
 
-def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
+@st.cache(allow_output_mutation=True)
+def manipulate_base_graph(G):
+    """
+    convert the tunnels data in the base attribute to be numeric
+    run in a seperate function for performance
+    """
+    for data in G.edges(data=True):    
+        data[2]['tunnel'] = 1 if data[2]['tunnel'] == 'T' else 0
+    return G
+
+def modernGraphWeightUpdates(G,cctv_pref=0,lamps_pref=0,trees_pref=0, tunnels_pref = 0):
     """
     Takes a graph G as input and adds the weights
     """
@@ -156,21 +167,19 @@ def modernGraphWeightUpdates(G,cctv_perf=1.0,lamps_perf=1.0,trees_perf=1.0):
         data=data
         coord1 = data[0]
         coord2 = data[1]
+        #logging.info(f"{type(data[2]['tunnel'])}")
         
-        if data[2]['CCTV20mRE'] > 0:
-            cctv_present = 1
-        else:
-            cctv_present = 0
+        data[2]['tunnel'] = 1 if data[2]['tunnel'] == 'T' else 0
 
-        cctv_present = data[2]['CCTV20mRE']
         # ZE formula to tweak
         data[2]['weight'] = 1
         #Length is a bad
         data[2]['weight'] = data[2]['weight']  *(data[2]['Length'])
         #these things are all good
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5 * cctv_present * cctv_perf )
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Lamps20m']  * lamps_perf)
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Trees20m']  * trees_perf) 
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5 * data[2]['CCTV20mRE'] * cctv_pref )
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Lamps20m']  * lamps_pref)
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Trees20m']  * trees_pref)
+        data[2]['weight'] = data[2]['weight'] * (1 + data[2]['tunnel']  * tunnels_pref)
 
         # It is adapted for pedestrians ?
         relativeEase = 1.0
