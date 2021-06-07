@@ -41,11 +41,15 @@ def getStartEnd(start_point,end_point,df_nodes,dummy=False):
             except:
                 st.text('start location bad')
                 raise ValueError
+        
         if end_point:
             location_e = locator.geocode(end_point)
-
-        x_end = location_e.longitude
-        y_end = location_e.latitude
+            try:
+                x_end = location_e.longitude
+                y_end = location_e.latitude
+            except:
+                st.text('end location bad')
+                raise ValueError
 
     df_pts = pd.DataFrame([[x_start,y_start],[x_end,y_end]],columns=['x','y'])
     df_nodes['point'] = [(x, y) for x,y in zip(df_nodes['x'], df_nodes['y'])]
@@ -111,7 +115,9 @@ def mapIt(start,end,weighted_G):
         route = nx.shortest_path(weighted_G ,source=start, target=end, weight = 'weight')
         #shortest = nx.shortest_path(G ,source=start, target=end, weight = "Length")
     except:
-        return "## !! Address not found in network"
+        st.markdown("## !! Address not found in network")
+        raise ValueError
+        
         
     # And getting the list of the nodes position tuples
     lat,lon = [],[]
@@ -174,17 +180,19 @@ def modernGraphWeightUpdates(G, prefs):
         # create a steps flag 
         steps_flag = 1 if data[2]['fclass'] == 'steps' else 0
 
+        pedestrian_flag = 1 if data[2]['fclass'] in ['pedestrian','footway'] else 0
+
         # ZE formula to tweak
         data[2]['weight'] = 1
         #Length is a bad
         data[2]['weight'] = data[2]['weight']  *(data[2]['Length'])
         #these things are all good
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5 * data[2]['CCTV20mRE'] * prefs['cctv'] )
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Lamps20m']  * prefs['lamps'])
-        data[2]['weight'] = data[2]['weight'] / (1.0 + 0.5*data[2]['Trees20m']  * prefs['trees'])
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 1 * data[2]['CCTV20mRE'] * prefs['cctv'] )
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 1*data[2]['Lamps20m']  * prefs['lamps'])
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 1*data[2]['Trees20m']  * prefs['trees'])
         data[2]['weight'] = data[2]['weight'] * (1 + tunnels_flag  * prefs['tunnels'] * avoidance_penalty)
         data[2]['weight'] = data[2]['weight'] * (1 +  steps_flag* prefs['stairs'] * avoidance_penalty)
-
+        data[2]['weight'] = data[2]['weight'] / (1.0 + 1* pedestrian_flag  * prefs['pedestrian'])
         # It is adapted for pedestrians ?
         relativeEase = 1.0
         if data[2]['fclass'] == "pedestrian":

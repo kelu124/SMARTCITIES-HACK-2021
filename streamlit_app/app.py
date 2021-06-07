@@ -59,6 +59,7 @@ st.sidebar.markdown('### Safety')
 prefs['cctv'] = 1 if st.sidebar.checkbox('Prioritise CCTV',value = False) else 0
 prefs['lamps'] = 1 if st.sidebar.checkbox('Prioritise Street Lighting',value = False) else 0
 prefs['tunnels'] = 1 if st.sidebar.checkbox('Avoid Tunnels',value = False) else 0
+prefs['pedestrian'] = 1 if st.sidebar.checkbox('Prioritise Footways',value = False) else 0
 
 st.sidebar.markdown('### Mobility')
 prefs['stairs'] = 1 if st.sidebar.checkbox('Avoid Stairs',value = False) else 0
@@ -66,6 +67,7 @@ prefs['stairs'] = 1 if st.sidebar.checkbox('Avoid Stairs',value = False) else 0
 st.sidebar.markdown('### Pleasure')
 prefs['trees'] = 1 if st.sidebar.checkbox('Prioritise Trees',value = False) else 0
 
+st.sidebar.markdown('---')
 st.sidebar.markdown('# Plot Data')
 #add boxes to overlay the data
 st.sidebar.markdown('### Safety')
