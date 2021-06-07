@@ -229,6 +229,7 @@ def plot_path(lat, long, origin_point, destination_point):
     # adding the lines joining the nodes
     
     fig = go.Figure(layout = go.Layout(height = 600, width = 1000))
+    
     #add our optimal path
     fig.add_trace(go.Scattermapbox(
         name = "Optimal path - nodes",

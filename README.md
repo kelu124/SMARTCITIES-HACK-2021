@@ -18,6 +18,8 @@ We are excited to be involved in the #SmartCities Hackathon, it resonates with o
 
 ## Installation Instructions
 
+The easiest way to run this code will be to use a linux environment, this has been tested on Ubuntu.
+
 In order to successfully run the code in this respository, it is recommended that you create a virtual environment and install the required packages from the requirements.txt file provided. This can be done either through pip or conda Python package managers in the appropriate command line.
 
 ```
@@ -32,12 +34,35 @@ In order to successfully run the code in this respository, it is recommended tha
 ```
 
 ## Running the Code
-Insert instructions on how to run the code here.
 
+Clone the repository into a folder and activate the virtual environment or the conda environment.
+Then run the following commands:
 ```
-
+cd streamlit_app
+streamlit run app.py
 ```
 
 ## Notes on GDAL
 A lot of the functionality in this app is based on the GDAL library.
 Installing GDAL is relatively simple in Linux based environments
+
+```
+#ubuntu commands
+sudo apt install gdal-bin python-gdal python3-gdal python3-rtree
+```
+
+On windows you will need to install using this link
+https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows
+
+
+## Datasets used
+This project combines a number of open datasets.
+These are:
+
+ * 
+
+
+Good test sites
+Avoid Stairs
+The Landmark, Singapore
+Smith Street, Singapore
