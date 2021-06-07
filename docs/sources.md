@@ -50,12 +50,11 @@
   * demo by Maria: https://share.streamlit.io/mariamingallonmm/smartcities-hack-streamlitapp
 
 
-### Data:
+### Data opportunities storage / management
 
 * postgis+postgresql 
 * geopandas
 * networkx
-
 
 ## Example of code:
 
