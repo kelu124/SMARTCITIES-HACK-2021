@@ -24,6 +24,9 @@ Today, the digital assistants helps users recommending the best path. MyWay reco
 
 We also made use of the available street networks in Open Street Maps datasets, but a heavy rework of this dataset was required to improve the representation of the networks’ interconnectivity. For this prototype we have only included a portion of the Singapore road map network in order to reduce the amount of computational work required. 
 The MyWay engine is building on top of existing path-finding algorithms available in the python Networkx package. We have combined the open data sets with the transport network by splitting the transport network into chunks no larger than 100m and then looking at the number of features of interest for each of those 100m chunks. We then update calculate an “effective distance” for each chunk of the network based on our features and users input preferences, making the length longer if it is undesirable and shorter if it is desirable. We then find the shortest path from the users start location to the end location using this “Effective distance” and display that to the user.
+
+![SingaporeMap](./src/imgs/comparing.png)
+
 Later on, the app could build on earth observation data to feed in updated green spaces, as well as sentiment rating from social networks with tagged pictures to increase the relevance of observations.
 
 The references to datasets, and precise overview of the actual code, are published and can be found on: https://github.com/mottmacdonaldglobal/SMARTCITIES-HACK-2021/
