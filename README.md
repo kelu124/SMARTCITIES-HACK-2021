@@ -1,6 +1,6 @@
 # MyWay
 
-![SingaporeMap](./src/imgs/map.png)
+![SingaporeMap](./src/imgs/logo_map.png)
 
 ## Description
 
@@ -12,7 +12,7 @@ We are excited to be involved in the #SmartCities Hackathon: it strongly resonat
 ## Repository Ownership
 
 * **Practice**: Cities
-* **Sector**: Digital Twins
+* **Sector**: Green Cities, Safety, Digital Twins
 * **Original Author(s)**: the MM team
 * **Contact Details for Current Repository Owner(s)**: luc.jonveaux@mottmac.com
 
@@ -24,6 +24,9 @@ Today, the digital assistants helps users recommending the best path. MyWay reco
 
 We also made use of the available street networks in Open Street Maps datasets, but a heavy rework of this dataset was required to improve the representation of the networks’ interconnectivity. For this prototype we have only included a portion of the Singapore road map network in order to reduce the amount of computational work required. 
 The MyWay engine is building on top of existing path-finding algorithms available in the python Networkx package. We have combined the open data sets with the transport network by splitting the transport network into chunks no larger than 100m and then looking at the number of features of interest for each of those 100m chunks. We then update calculate an “effective distance” for each chunk of the network based on our features and users input preferences, making the length longer if it is undesirable and shorter if it is desirable. We then find the shortest path from the users start location to the end location using this “Effective distance” and display that to the user.
+
+![SingaporeMap](./src/imgs/comparing.png)
+
 Later on, the app could build on earth observation data to feed in updated green spaces, as well as sentiment rating from social networks with tagged pictures to increase the relevance of observations.
 
 The references to datasets, and precise overview of the actual code, are published and can be found on: https://github.com/mottmacdonaldglobal/SMARTCITIES-HACK-2021/
@@ -72,10 +75,13 @@ https://sandbox.idre.ucla.edu/sandbox/tutorials/installing-gdal-for-windows
 
 Clone the repository into a folder and activate the virtual environment or the conda environment.
 Then run the following commands:
+
 ```
 cd streamlit_app
 streamlit run app.py
 ```
+
+This will open the app on `localhost:8501 `. 
 
 # Datasets Used
 
@@ -90,9 +96,13 @@ Street Lighting | https://data.gov.sg/dataset/lta-lamp-post
 Trees | https://exploretrees.sg/ 
 Parks | https://data.gov.sg/dataset/park-facilities
 
+A heavy rework of the network dataset was required to improve the representation of the networks’ interconnectivity, tackled using ArcGIS tools.
+
+Our solution uses a custom shapefile that integrates different layers merged over the center of Singapore downtown.  
+
 # Good Test Sites
 
-This is a table of useful addresses for testing the feature preferences
+This is a table of useful addresses for testing the feature preferences of users.
 
 Feature | Start Address | End Address
 :---:|:---:|:---:
